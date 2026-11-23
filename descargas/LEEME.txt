@@ -1,6 +1,0 @@
-Coloca aquí los archivos de precios con estos nombres exactos:
-
-  precios-servicios.pdf   -> botón "Descarga el PDF"
-  precios-servicios.jpg   -> botón "Descarga la imagen"
-
-Si usas otros nombres, cambia los enlaces en index.html (busca "descargas/").
