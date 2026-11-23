@@ -1,0 +1,6 @@
+# Permite que todos los buscadores rastreen el sitio
+User-agent: *
+Allow: /
+Disallow: /descargas/LEEME.txt
+
+Sitemap: https://TU-DOMINIO.com/sitemap.xml
