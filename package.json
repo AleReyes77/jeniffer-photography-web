@@ -18,7 +18,8 @@
     "check:recursos": "node scripts/verificar-recursos.js",
     "verificar": "npm run lint:html && npm run check:recursos && npm test",
     "docs:pdf": "node scripts/documentacion/generar-pdf.js",
-    "recursos": "node scripts/preparar-recursos.js"
+    "recursos": "node scripts/preparar-recursos.js",
+    "docs:guia": "node scripts/documentacion/generar-guia.js"
   },
   "keywords": [
     "fotografia",
