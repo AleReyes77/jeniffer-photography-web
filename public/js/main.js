@@ -1560,10 +1560,6 @@
     a.addEventListener("click", function (e) { e.preventDefault(); closeAll(); B.classList.add(a.getAttribute("data-open") + "-on"); });
   });
 
-  // Foto del "Sobre mí": reutiliza la imagen ya incrustada (sin hotlink externo)
-  var av = document.querySelector(".about-section img"), src = document.querySelector("#layered-hero-a img");
-  if (av && src) av.src = src.src;
-
   // Deslizar con el dedo en los sliders
   document.querySelectorAll(".slider").forEach(function (sl) {
     var x = 0, y = 0;
