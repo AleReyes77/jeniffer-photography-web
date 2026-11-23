@@ -1,0 +1,11 @@
+{
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.root": "/",
+  "editor.formatOnSave": false,
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "html.format.wrapLineLength": 0,
+  "files.exclude": {
+    "**/.DS_Store": true
+  }
+}
