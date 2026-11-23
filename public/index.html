@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jeniffer Valle | Fotógrafa de Bodas, Quinceaños y Cumpleaños</title>
-<meta name="description" content="Fotógrafa profesional de bodas, quinceaños y cumpleaños. Jeniffer Valle captura emociones y momentos únicos con un estilo artístico y personalizado. Mira el portafolio, descarga los precios y reserva tu sesión.">
+<meta name="description" content="Jeniffer Valle, fotógrafa profesional de bodas, quinceaños y cumpleaños. Fotos con estilo artístico y personalizado. Mira el portafolio y reserva tu sesión.">
 <meta name="author" content="Jeniffer Valle">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -198,7 +198,7 @@
       "@type": "ImageGallery",
       "@id": "https://TU-DOMINIO.com/#galeria",
       "name": "Portafolio de Jeniffer Valle Fotografía",
-      "url": "https://TU-DOMINIO.com/#galeria-fotografica",
+      "url": "https://TU-DOMINIO.com/#parallax-gallery",
       "isPartOf": {
         "@id": "https://TU-DOMINIO.com/#webpage"
       },
@@ -369,7 +369,7 @@
           "name": "¿Cómo reservo una sesión de fotos?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Escríbeme a jenifferariana95@gmail.com o por Instagram y Facebook indicando la fecha, el tipo de evento y el lugar. Te confirmo la disponibilidad y los detalles de la sesión."
+            "text": "Completa el formulario de reservas de esta página, o escríbeme a jenifferariana95@gmail.com o por Instagram y Facebook, indicando la fecha, el tipo de evento y el lugar. Te confirmo la disponibilidad y los detalles de la sesión."
           }
         },
         {
@@ -398,7 +398,7 @@
 <a class="skip-link" href="#main">Saltar al contenido</a>
 <noscript><p style="position:relative;z-index:99999;margin:0;padding:12px 16px;background:#866BAF;color:#fff;text-align:center">Jeniffer Valle — fotografía profesional de bodas, quinceaños y cumpleaños. Activa JavaScript para ver el portafolio interactivo.</p></noscript>
 <nav class="seo-nav" aria-label="Navegación principal">
-  <a href="#main">Portafolio</a><a href="#sobre-mi">Sobre mí</a><a href="#servicios-fotografia">Servicios</a><a href="#galeria-fotografica">Galería</a><a href="#spiral-gallery">Galería espiral</a><a href="#contacto">Contacto</a>
+  <a href="#main">Portafolio</a><a href="#sobre-mi">Sobre mí</a><a href="#servicios-fotografia">Servicios</a><a href="#parallax-gallery">Galería</a><a href="#spiral-gallery">Galería espiral</a><a href="#reservar">Reservas</a><a href="#preguntas-frecuentes">Preguntas frecuentes</a><a href="#contacto">Contacto</a>
 </nav>
 
 <!-- ================= CURSOR ================= -->
@@ -483,19 +483,19 @@
 </div>
 
 <!-- ================= TRAVEL SLIDER ================= -->
-<div class="travel-section">
+<div class="travel-section" id="boda" role="dialog" aria-modal="true" aria-label="Galería de bodas">
   <div class="travel-close hover-target"></div>
   <div class="slider" data-slider="boda"></div>
 </div>
 
 <!-- ================= WILDLIFE SLIDER ================= -->
-<div class="wildlife-section">
+<div class="wildlife-section" id="quinceanos" role="dialog" aria-modal="true" aria-label="Galería de quinceaños">
   <div class="wildlife-close hover-target"></div>
   <div class="slider" data-slider="quinceanos"></div>
 </div>
 
 <!-- ================= NATURE SLIDER ================= -->
-<div class="nature-section">
+<div class="nature-section" id="cumpleanos" role="dialog" aria-modal="true" aria-label="Galería de cumpleaños">
   <div class="nature-close hover-target"></div>
   <div class="slider" data-slider="cumpleanos"></div>
 </div>
@@ -584,17 +584,11 @@
   </div>
 
   <div class="layered-hero layered-hero-b" id="layered-hero-b">
-    <img
-      src=""
-      alt="" aria-hidden="true"
-    />
+    <img src="img/hero/a-traves-del-lente-jeniffer-valle.webp" alt="" aria-hidden="true" width="1920" height="1434" loading="lazy" decoding="async">
   </div>
 
   <div class="layered-hero layered-hero-c" id="layered-hero-c">
-    <img
-      src=""
-      alt="" aria-hidden="true"
-    />
+    <img src="img/hero/a-traves-del-lente-jeniffer-valle.webp" alt="" aria-hidden="true" width="1920" height="1434" loading="lazy" decoding="async">
   </div>
 
   <div class="layered-motion-content">
@@ -613,9 +607,9 @@
 <section class="spiral-gallery-section" id="spiral-gallery">
   <div id="spiral-instructions">galería<br>en espiral</div>
   <div id="spiral-credits">Fotografías de Jeniffer Photography</div>
-  <div class="spiral-infos" id="spiralInfos" onclick="this.classList.add('hidden')">desplaza | arrastra || Haz clic aquí para ocultar.</div>
+  <button type="button" class="spiral-infos" id="spiralInfos">desplaza | arrastra || Haz clic aquí para ocultar.</button>
   <div class="visually-hidden"><h2>Galería espiral de fotografía</h2><p>Explora una selección visual de trabajos fotográficos de Jeniffer Valle en una galería interactiva optimizada para dispositivos táctiles y navegadores modernos.</p></div>
-  <canvas id="webgl-canvas" aria-label="Galería espiral interactiva de fotografías"></canvas>
+  <canvas id="webgl-canvas" role="img" aria-label="Galería espiral interactiva de fotografías"></canvas>
 </section>
 
 <!-- ================= SERVICIOS + PREGUNTAS FRECUENTES (SEO) ================= -->
@@ -653,6 +647,62 @@
   </div>
 </section>
 
+<!-- ================= FORMULARIO DE RESERVAS (conectado al backend) ================= -->
+<section class="reserva" id="reservar" aria-labelledby="reserva-titulo">
+  <div class="seo-wrap">
+    <p class="seo-kicker">Reservas</p>
+    <h2 id="reserva-titulo">Reserva tu sesión de fotos</h2>
+    <p class="seo-lead">Cuéntame qué celebras y la fecha. Te respondo por correo para confirmar la disponibilidad y los detalles.</p>
+    <form class="reserva__form" id="formReserva" action="/api/reservas" method="post" novalidate>
+      <div class="reserva__grid">
+        <div class="reserva__campo">
+          <label for="r-nombre">Nombre completo <span aria-hidden="true">*</span></label>
+          <input id="r-nombre" name="nombre" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="r-nombre-error">
+          <p class="reserva__error" id="r-nombre-error" aria-live="polite"></p>
+        </div>
+        <div class="reserva__campo">
+          <label for="r-email">Correo electrónico <span aria-hidden="true">*</span></label>
+          <input id="r-email" name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby="r-email-error">
+          <p class="reserva__error" id="r-email-error" aria-live="polite"></p>
+        </div>
+        <div class="reserva__campo">
+          <label for="r-telefono">Teléfono o WhatsApp</label>
+          <input id="r-telefono" name="telefono" type="tel" autocomplete="tel" maxlength="20" aria-describedby="r-telefono-error">
+          <p class="reserva__error" id="r-telefono-error" aria-live="polite"></p>
+        </div>
+        <div class="reserva__campo">
+          <label for="r-tipo">Tipo de evento <span aria-hidden="true">*</span></label>
+          <select id="r-tipo" name="tipoEvento" required aria-describedby="r-tipo-error">
+            <option value="">Elige una opción</option>
+            <option value="boda">Boda</option>
+            <option value="quinceanos">Quinceaños</option>
+            <option value="cumpleanos">Cumpleaños</option>
+            <option value="sesion">Sesión de fotos</option>
+            <option value="otro">Otro evento</option>
+          </select>
+          <p class="reserva__error" id="r-tipo-error" aria-live="polite"></p>
+        </div>
+        <div class="reserva__campo">
+          <label for="r-fecha">Fecha del evento</label>
+          <input id="r-fecha" name="fecha" type="date" aria-describedby="r-fecha-error">
+          <p class="reserva__error" id="r-fecha-error" aria-live="polite"></p>
+        </div>
+        <div class="reserva__campo reserva__campo--trampa" aria-hidden="true">
+          <label for="r-website">No llenes este campo</label>
+          <input id="r-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="reserva__campo reserva__campo--ancho">
+          <label for="r-mensaje">Mensaje <span aria-hidden="true">*</span></label>
+          <textarea id="r-mensaje" name="mensaje" rows="5" required minlength="10" maxlength="2000" aria-describedby="r-mensaje-error"></textarea>
+          <p class="reserva__error" id="r-mensaje-error" aria-live="polite"></p>
+        </div>
+      </div>
+      <button type="submit" class="pricing-card__btn reserva__enviar hover-target" id="reservaEnviar">Enviar solicitud</button>
+      <p class="reserva__estado" id="reservaEstado" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
 <section class="seo-faq" id="preguntas-frecuentes" aria-labelledby="faq-titulo">
   <div class="seo-wrap">
     <p class="seo-kicker">Preguntas frecuentes</p>
@@ -663,7 +713,7 @@
     </details>
     <details class="seo-faq__item">
       <summary>¿Cómo reservo una sesión de fotos?</summary>
-      <p>Escríbeme a jenifferariana95@gmail.com o por Instagram y Facebook indicando la fecha, el tipo de evento y el lugar. Te confirmo la disponibilidad y los detalles de la sesión.</p>
+      <p>Completa el formulario de reservas de esta página, o escríbeme a jenifferariana95@gmail.com o por Instagram y Facebook, indicando la fecha, el tipo de evento y el lugar. Te confirmo la disponibilidad y los detalles de la sesión.</p>
     </details>
     <details class="seo-faq__item">
       <summary>¿Dónde puedo ver los precios de los servicios?</summary>
@@ -691,14 +741,14 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         <span id="selfieOpenLabel">Tómate una foto</span>
       </button>
-      <a class="selfie-btn selfie-btn--ghost hover-target" id="selfieDownload" download="mi-foto-jeniffer-photography.jpg" hidden>Descargar mi foto</a>
+      <a class="selfie-btn selfie-btn--ghost hover-target" id="selfieDownload" hidden>Descargar mi foto</a>
       <button type="button" class="selfie-btn selfie-btn--ghost hover-target" id="selfieBack" hidden>Ver la animación</button>
     </div>
   </div>
   <div class="papers" aria-hidden="true">
     <div class="paper one"></div><div class="paper two"></div><div class="paper three"></div>
   </div>
-  <div class="scene" aria-label="Cámara fotográfica tridimensional animada">
+  <div class="scene" role="img" aria-label="Cámara fotográfica tridimensional animada">
     <div class="camera"><div class="body">
       <div class="back face">
         <div class="circle-buttons"><div class="button one"></div><div class="button two"></div><div class="button three"></div><div class="button four"></div></div>
@@ -743,7 +793,7 @@
     <h3 id="selfieTitle">Tómate una foto</h3>
     <p class="selfie-modal__msg" id="selfieMsg">Para tomarte la foto, permite el acceso a la cámara cuando tu navegador te lo pida.</p>
     <div class="selfie-modal__view">
-      <video id="selfieVideo" playsinline muted autoplay></video>
+      <video id="selfieVideo" playsinline muted></video>
       <div class="selfie-modal__count" id="selfieCount"></div>
     </div>
     <div class="selfie-modal__btns">
@@ -796,5 +846,7 @@
 <!-- Scripts del sitio -->
 <script src="js/fotos.js"></script>
 <script src="js/main.js"></script>
+<script src="js/sitio.js"></script>
+<script src="js/reservas.js"></script>
 </body>
 </html>

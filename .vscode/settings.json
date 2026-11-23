@@ -1,11 +1,12 @@
 {
   "liveServer.settings.port": 5500,
-  "liveServer.settings.root": "/",
+  "liveServer.settings.root": "/public",
   "editor.formatOnSave": false,
   "files.encoding": "utf8",
   "files.eol": "\n",
   "html.format.wrapLineLength": 0,
   "files.exclude": {
-    "**/.DS_Store": true
+    "**/.DS_Store": true,
+    "**/node_modules": true
   }
 }

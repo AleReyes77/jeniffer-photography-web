@@ -1,0 +1,43 @@
+{
+  "name": "jeniffer-photography-web",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Sitio web y backend de Jeniffer Valle Fotografía: portafolio de bodas, quinceaños y cumpleaños con formulario de reservas.",
+  "type": "module",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=22.9"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch --env-file-if-exists=.env server/index.js",
+    "start:env": "node --env-file=.env server/index.js",
+    "test": "node --test --test-reporter=spec \"tests/**/*.test.js\"",
+    "test:cobertura": "node --test --experimental-test-coverage \"tests/**/*.test.js\"",
+    "lint:html": "html-validate public/index.html public/404.html",
+    "check:recursos": "node scripts/verificar-recursos.js",
+    "verificar": "npm run lint:html && npm run check:recursos && npm test",
+    "docs:pdf": "node scripts/documentacion/generar-pdf.js"
+  },
+  "keywords": [
+    "fotografia",
+    "bodas",
+    "quinceaños",
+    "cumpleaños",
+    "portafolio",
+    "express"
+  ],
+  "author": "Jeniffer Valle",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "compression": "^1.8.2",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.5",
+    "helmet": "^8.3.0",
+    "nodemailer": "^10.6.1"
+  },
+  "devDependencies": {
+    "html-validate": "^11.21.1",
+    "supertest": "^7.3.2"
+  }
+}

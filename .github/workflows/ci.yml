@@ -1,0 +1,33 @@
+# Integración continua: en cada push y Pull Request instala, valida el HTML,
+# revisa que no falten archivos y ejecuta las pruebas en Node 22 y 24.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - name: Validar HTML
+        run: npm run lint:html
+      - name: Revisar recursos
+        run: npm run check:recursos
+      - name: Pruebas
+        run: npm test
+      - name: Auditoría de seguridad de dependencias
+        run: npm audit --omit=dev --audit-level=high
