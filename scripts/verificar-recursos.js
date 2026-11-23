@@ -42,6 +42,8 @@ export function verificarRecursos(carpetaPublica = PUBLICA) {
     ['index.html', 'html', '.'],
     ['404.html', 'html', '.'],
     ['css/styles.css', 'css', 'css'],
+    ['css/fuentes.css', 'css', 'css'],
+    ['vendor/bootstrap-5.3.2/bootstrap.min.css', 'css', 'vendor/bootstrap-5.3.2'],
     ['js/fotos.js', 'js', '.'],
     ['js/main.js', 'js', '.'],
     ['site.webmanifest', 'json', '.'],
@@ -59,6 +61,13 @@ export function verificarRecursos(carpetaPublica = PUBLICA) {
       revisadas += 1;
       if (!existsSync(path.join(carpetaPublica, relativa))) faltantes.push({ archivo, ruta });
     }
+  }
+  // Las miniaturas no aparecen escritas en ningún archivo: se derivan de JF_PHOTOS en fotos.js.
+  const fotos = readFileSync(path.join(carpetaPublica, 'js/fotos.js'), 'utf8');
+  for (const ruta of fotos.slice(0, fotos.indexOf('JF_SPIRAL_PHOTOS')).match(/img\/[^"']+\.webp/g) || []) {
+    const miniatura = ruta.replace(/^img\//, 'img/miniaturas/');
+    revisadas += 1;
+    if (!existsSync(path.join(carpetaPublica, miniatura))) faltantes.push({ archivo: 'js/fotos.js (miniatura)', ruta: miniatura });
   }
   return { revisadas, faltantes };
 }

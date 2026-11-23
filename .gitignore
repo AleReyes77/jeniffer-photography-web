@@ -1,21 +1,34 @@
-# Dependencias
+# Dependencias (se reinstalan con npm install)
 node_modules/
 
-# Variables de entorno con contraseñas
+# Variables de entorno: pueden contener contraseñas y llaves
 .env
 .env.*
 !.env.example
 
-# Datos generados en ejecución (reservas)
+# Llaves, certificados y respaldos que nunca deben publicarse
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.db
+*.bak
+*.zip
+
+# Datos generados en ejecución
 data/
+logs/
+*.log
+
+# Archivos generados que se pueden reconstruir
+coverage/
+docs/*.html
 
 # Sistema operativo y editores
 .DS_Store
 Thumbs.db
+.idea/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
-
-# Registros y cobertura
-*.log
-coverage/

@@ -4,13 +4,14 @@
  * 1. Enlaces directos a galerías: /#boda, /#quinceanos y /#cumpleanos abren su galería.
  * 2. Botón de ayuda de la galería espiral (reemplaza el antiguo onclick en línea).
  * 3. Botones de precios: si el archivo todavía no existe en /descargas, el botón
- *    se desactiva y se invita a usar el formulario de reservas, en lugar de llevar a un 404.
+ *    lleva a WhatsApp para pedir los precios, en lugar de llevar a un 404.
  */
 (function () {
   'use strict';
 
   /** Relación entre el ancla de la URL y la clase que abre cada galería en <body>. */
   var GALERIAS = { boda: 'travel', quinceanos: 'wildlife', cumpleanos: 'nature' };
+  var WHATSAPP = 'https://wa.me/50584329491?text=' + encodeURIComponent('Hola Jeniffer, quiero conocer los precios de tus servicios.');
   var CLASES_ABIERTAS = /\b(about|contact|travel|wildlife|nature)-on\b/g;
 
   /** Abre la galería indicada por el ancla actual (si corresponde a una galería). */
@@ -33,7 +34,7 @@
 
   /**
    * Comprueba con una petición HEAD si los archivos de precios existen.
-   * Si no existen, el botón queda desactivado con un texto claro y enlaza al formulario.
+   * Si no existen, el botón lleva a WhatsApp para pedir los precios.
    */
   function revisarArchivosDePrecios() {
     var botones = document.querySelectorAll('.pricing-card__btn[href^="descargas/"]');
@@ -53,10 +54,12 @@
 
   function marcarNoDisponible(boton) {
     boton.removeAttribute('download');
-    boton.setAttribute('href', '#reservar');
+    boton.setAttribute('href', WHATSAPP);
+    boton.setAttribute('target', '_blank');
+    boton.setAttribute('rel', 'noopener noreferrer');
     boton.classList.add('pricing-card__btn--pendiente');
-    boton.setAttribute('aria-label', 'Lista de precios disponible pronto. Solicita los precios con el formulario de reservas');
-    boton.lastChild.textContent = ' Pídelos en el formulario';
+    boton.setAttribute('aria-label', 'Pide la lista de precios por WhatsApp');
+    boton.lastChild.textContent = ' Pídelos por WhatsApp';
   }
 
   function iniciar() {

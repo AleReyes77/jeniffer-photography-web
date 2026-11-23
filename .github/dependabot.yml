@@ -1,0 +1,17 @@
+# Dependabot: revisa cada semana si hay versiones nuevas o parches de seguridad
+# y abre un Pull Request automático para actualizarlas. La CI prueba cada PR.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      dependencias-de-desarrollo:
+        dependency-type: development
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

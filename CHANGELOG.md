@@ -2,6 +2,29 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [2.1.0] — 2026-11-23
+
+### Cambiado
+- Reservas por WhatsApp (+505 8432 9491) en lugar del formulario; los botones de precios sin archivo llevan a WhatsApp.
+- Marca unificada como «Jeniffer Photography»; SEO local para Nicaragua (título, descripción, JSON-LD con teléfono y país).
+- Servidor simplificado: solo sirve el sitio y /api/salud (3 dependencias de producción).
+- CSP estricta: scripts, estilos y fuentes solo del propio dominio; form-action 'none'.
+
+### Rendimiento
+- Fuentes, Three.js, GSAP y Bootstrap servidos desde el propio dominio (0 servidores externos).
+- Bootstrap recortado de 227 KB a 11 KB; jQuery eliminado; scripts con defer.
+- Galerías espiral y parallax se inician al acercarse; los sliders descargan sus fotos al abrirse.
+- 33 miniaturas de 480 px para las galerías donde las fotos se ven pequeñas.
+- Carga inicial: 70 → 33 peticiones y 6,4 MB → 1,0 MB.
+
+### Seguridad y mantenimiento
+- Dependabot, CodeQL y .gitignore ampliado (llaves, bases de datos, respaldos).
+- Prueba de sintaxis de los scripts del navegador (detectó un error real antes de publicar).
+- Configuración de PM2 para VPS; se retiró render.yaml.
+
+### Eliminado
+- Formulario de reservas, API POST /api/reservas, validación, almacén JSON Lines y envío de correo.
+
 ## [2.0.0] — 2026-11-23
 
 ### Agregado

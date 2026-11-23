@@ -1,45 +1,59 @@
-# Despliegue
+# Publicación (despliegue)
 
-## Lista de verificación previa
+## Lista previa
 
 - [ ] `npm run verificar` pasa en tu computadora.
-- [ ] `TU-DOMINIO.com` reemplazado en todo el proyecto.
-- [ ] Archivos de precios en `public/descargas/`.
-- [ ] Ciudad, país y teléfono agregados al JSON-LD.
-- [ ] Variables SMTP listas (para Gmail: activa la verificación en dos pasos y crea una *contraseña de aplicación*).
+- [ ] `https://TU-DOMINIO.com` reemplazado por el dominio real en todo el proyecto.
+- [ ] `public/descargas/precios-servicios.pdf` y `precios-servicios.jpg` agregados.
+- [ ] El hosting tiene **Node.js 22.9 o superior** y certificado **HTTPS** (Let's Encrypt suele ser gratuito).
 
-## Opción 1 — Render (recomendada)
+## Opción A — Hosting compartido con «Setup Node.js App» (cPanel)
 
-1. Entra a <https://render.com> e inicia sesión con GitHub.
-2. **New → Blueprint** y elige el repositorio `jeniffer-photography-web`. Render lee `render.yaml`.
-3. Completa las variables marcadas como secretas (`SITE_URL`, `SMTP_*`, `CONTACT_*`).
-4. Al terminar, `https://<servicio>.onrender.com/api/salud` debe responder `"estado":"ok"`.
-5. **Dominio propio:** Settings → Custom Domains → agrega tu dominio y crea en tu proveedor de DNS el registro que indique Render. El certificado HTTPS es automático.
+Es lo más común en hostings de Nicaragua y Latinoamérica.
 
-> En el plan gratuito el disco no es permanente: el archivo de reservas se borra al reiniciar.
-> Las reservas siguen llegando por **correo**, que es la copia principal. Para conservar el archivo,
-> agrega un *Persistent Disk* montado en `/opt/render/project/src/data`.
+1. En cPanel abre **Setup Node.js App → Create Application**.
+2. Node.js version: 22 o superior. Application mode: **Production**.
+3. Application root: la carpeta donde subirás el proyecto (por ejemplo `jeniffer-photography`).
+4. Application URL: tu dominio. Application startup file: `server/index.js`.
+5. Variables de entorno: `NODE_ENV=production`, `TRUST_PROXY=true`, `SITE_URL=https://tu-dominio`.
+6. Sube el proyecto **sin** `node_modules` ni `.env` (con Git o el administrador de archivos).
+7. Pulsa **Run NPM Install** y después **Restart**.
+8. Abre `https://tu-dominio/api/salud`: debe responder `"estado":"ok"`.
 
-## Opción 2 — Docker (VPS, Railway, Fly.io)
+## Opción B — VPS (servidor propio) con PM2
+
+```bash
+git clone https://github.com/AleReyes77/jeniffer-photography-web.git
+cd jeniffer-photography-web
+npm ci --omit=dev
+npm install -g pm2
+pm2 start ecosystem.config.cjs   # mantiene el sitio encendido y lo reinicia si falla
+pm2 save && pm2 startup          # lo enciende solo al reiniciar el VPS
+```
+
+Delante pon **Nginx** o **Caddy** con HTTPS que reenvíe al puerto 3000 (Caddy obtiene el certificado solo).
+
+## Opción C — Docker
 
 ```bash
 docker build -t jeniffer-web .
-docker run -d --name jeniffer-web -p 3000:3000 --env-file .env -v jeniffer-datos:/app/data --restart unless-stopped jeniffer-web
+docker run -d --name jeniffer-web -p 3000:3000 -e TRUST_PROXY=true --restart unless-stopped jeniffer-web
 ```
 
-- El contenedor corre como el usuario sin privilegios `node`.
-- `HEALTHCHECK` consulta `/api/salud` cada 30 segundos.
-- El volumen `jeniffer-datos` conserva las reservas entre reinicios.
-- Pon delante un proxy con HTTPS (Caddy, Nginx o Cloudflare) y define `TRUST_PROXY=true`.
+## Opción D — Hosting solo estático (sin Node)
 
-## Opción 3 — Hosting estático (Hostinger, Netlify, GitHub Pages)
+Sube únicamente el contenido de `public/`. `.htaccess` (Apache) y `_headers` (Netlify) aplican las mismas
+cabeceras de seguridad y caché. Todo funciona igual porque el sitio ya no necesita al servidor para nada esencial.
 
-Sube **solo** el contenido de `public/`. Ya incluye `.htaccess` (Apache) y `_headers` (Netlify) con HTTPS,
-compresión, caché y cabeceras de seguridad. Todo funciona excepto el envío del formulario: al no haber
-servidor, `reservas.js` muestra el correo de contacto como alternativa.
+## Actualizar el sitio publicado
+
+1. Trabaja en una rama (`git switch -c cambio/descripcion`) y prueba en local (`npm run dev`).
+2. Abre un Pull Request: la CI debe quedar en verde.
+3. Une el PR a `main` y en el hosting: `git pull`, `npm ci --omit=dev` y reinicia la app.
+Nunca edites archivos directamente en el servidor en vivo.
 
 ## Después de publicar
 
-1. Abre el sitio en computadora y en celular; prueba el formulario y la cámara.
-2. Revisa <https://pagespeed.web.dev> y <https://search.google.com/test/rich-results>.
-3. Sigue los pasos de [SEO.md](SEO.md).
+- Monitor gratuito de disponibilidad (UptimeRobot) apuntando a `/api/salud`.
+- <https://pagespeed.web.dev> para medir la velocidad real.
+- Pasos de SEO en [SEO.md](SEO.md).

@@ -7,20 +7,11 @@
  */
 import { cargarConfiguracion } from './config.js';
 import { crearApp } from './app.js';
-import { crearAlmacen } from './lib/almacen.js';
-import { crearCorreo } from './lib/correo.js';
 import { crearRegistro } from './lib/registro.js';
 
 const config = cargarConfiguracion();
 const registro = crearRegistro({ nivel: config.esProduccion ? 'info' : 'debug' });
-const almacen = crearAlmacen(config.archivoReservas);
-const correo = crearCorreo(config);
-
-if (!correo.configurado) {
-  registro.warn('correo-sin-configurar', { detalle: 'Las reservas se guardan en el archivo, pero no se envían por correo. Revisa SMTP_* en .env' });
-}
-
-const app = crearApp({ config, almacen, correo, registro });
+const app = crearApp({ config, registro });
 
 const servidor = app.listen(config.puerto, () => {
   registro.info('servidor-iniciado', { url: `http://localhost:${config.puerto}`, entorno: config.entorno });
@@ -38,4 +29,10 @@ process.on('SIGTERM', () => apagar('SIGTERM'));
 process.on('SIGINT', () => apagar('SIGINT'));
 process.on('unhandledRejection', (motivo) => {
   registro.error('promesa-rechazada-sin-manejar', { motivo: String(motivo) });
+});
+process.on('uncaughtException', (error) => {
+  // Un error no capturado deja el proceso en un estado incierto: se registra y se sale;
+  // el hosting (PM2, systemd o Docker) lo vuelve a iniciar limpio.
+  registro.error('excepcion-no-capturada', { error: error.message, pila: error.stack });
+  process.exit(1);
 });

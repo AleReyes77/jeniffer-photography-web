@@ -2,7 +2,7 @@
  * app.js — Construye la aplicación Express (sin abrir el puerto).
  *
  * Separar "crear la app" de "escuchar en un puerto" permite probarla con Supertest
- * y reemplazar el almacén o el correo por versiones falsas en las pruebas.
+ * y reemplazar el registro por uno silencioso en las pruebas.
  */
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
@@ -17,32 +17,41 @@ const { version } = JSON.parse(readFileSync(path.join(RAIZ_PROYECTO, 'package.js
 /** Tiempo de caché por tipo de archivo (en segundos). */
 const CACHE = {
   imagen: 60 * 60 * 24 * 30, // 30 días: las fotos casi nunca cambian
+  inmutable: 60 * 60 * 24 * 365, // 1 año: fuentes y librerías con la versión en la ruta
 };
 
 /**
- * @param {{ config: object, almacen: object, correo: object, registro: object }} dependencias
+ * Elige la cabecera Cache-Control según el tipo de archivo.
+ * @param {string} rutaArchivo
  */
-export function crearApp({ config, almacen, correo, registro }) {
+export function cacheParaArchivo(rutaArchivo) {
+  const ruta = rutaArchivo.replace(/\\/g, '/');
+  const extension = path.extname(ruta).toLowerCase();
+  if (ruta.includes('/vendor/') || ruta.includes('/fonts/')) return `public, max-age=${CACHE.inmutable}, immutable`;
+  if (['.webp', '.jpg', '.jpeg', '.png', '.svg', '.ico'].includes(extension)) return `public, max-age=${CACHE.imagen}`;
+  // HTML, CSS y JS propios no llevan huella en el nombre: el navegador revalida cada vez (304 si no cambiaron).
+  return 'no-cache';
+}
+
+/**
+ * @param {{ config: object, registro: object }} dependencias
+ */
+export function crearApp({ config, registro }) {
   const app = express();
 
   app.disable('x-powered-by');
-  // Detrás de un proxy (Render, Nginx, Cloudflare) para obtener la IP real del visitante.
+  // Detrás de un proxy (Nginx, Cloudflare, el panel del hosting) para obtener la IP real del visitante.
   if (config.confiarEnProxy) app.set('trust proxy', 1);
 
   app.use(seguridad(config));
   app.use(permisos);
-  app.use(compression());
+  // Comprime con gzip todo lo que pese más de 1 KB (HTML, CSS, JS y JSON pesan de 3 a 5 veces menos).
+  app.use(compression({ threshold: 1024 }));
 
   // /index.html -> / (una sola URL por página: mejor para el SEO).
   app.get('/index.html', (_peticion, respuesta) => respuesta.redirect(301, '/'));
 
-  // API: cuerpos pequeños (10 KB) para evitar abusos.
-  app.use(
-    '/api',
-    express.json({ limit: '10kb' }),
-    express.urlencoded({ extended: false, limit: '10kb' }),
-    crearRutasApi({ config, almacen, correo, registro, version }),
-  );
+  app.use('/api', crearRutasApi({ config, version }));
 
   // Archivos del sitio.
   app.use(
@@ -50,16 +59,8 @@ export function crearApp({ config, almacen, correo, registro }) {
       index: 'index.html',
       dotfiles: 'ignore',
       setHeaders(respuesta, rutaArchivo) {
-        const extension = path.extname(rutaArchivo).toLowerCase();
-        if (extension === '.html') {
-          respuesta.setHeader('Cache-Control', 'no-cache');
-        } else if (['.webp', '.jpg', '.jpeg', '.png', '.svg', '.ico'].includes(extension)) {
-          respuesta.setHeader('Cache-Control', `public, max-age=${CACHE.imagen}`);
-        } else if (['.css', '.js'].includes(extension)) {
-          // CSS y JS no llevan huella en el nombre: el navegador revalida cada vez (304 si no cambiaron).
-          respuesta.setHeader('Cache-Control', 'no-cache');
-        }
-        if (extension === '.webmanifest') respuesta.setHeader('Content-Type', 'application/manifest+json');
+        respuesta.setHeader('Cache-Control', cacheParaArchivo(rutaArchivo));
+        if (rutaArchivo.endsWith('.webmanifest')) respuesta.setHeader('Content-Type', 'application/manifest+json');
       },
     }),
   );
@@ -77,7 +78,7 @@ export function crearApp({ config, almacen, correo, registro }) {
   app.use((error, peticion, respuesta, _siguiente) => {
     const estado = error.status || error.statusCode || 500;
     if (estado >= 500) registro.error('error-no-controlado', { ruta: peticion.path, error: error.message, pila: error.stack });
-    const mensaje = estado === 400 ? 'Solicitud mal formada.' : estado === 413 ? 'Solicitud demasiado grande.' : 'Error interno del servidor.';
+    const mensaje = estado >= 500 ? 'Error interno del servidor.' : 'Solicitud no válida.';
     respuesta.status(estado >= 400 && estado < 600 ? estado : 500).json({ ok: false, mensaje });
   });
 

@@ -438,7 +438,7 @@ export function explicarJs(linea) {
   if (/\bfetch\(/.test(t)) return 'Hace una petición HTTP al servidor (API fetch) y continúa sin bloquear la página.';
   if (/\.then\(/.test(t)) return 'Cuando la operación asíncrona anterior termina, ejecuta esta función con su resultado.';
   if (/\.catch\(/.test(t)) return 'Si la operación asíncrona falla, ejecuta esta función.';
-  if (/^console\./.test(t)) return 'Escribe un mensaje en la consola del navegador (diagnóstico).';
+  if (/^console\./.test(t)) return 'Escribe un mensaje en la consola (en el navegador, para diagnóstico; en Node, en la terminal para informar el progreso).';
   if (/^(this\.)?[\w$.\[\]'"]+\s*(\+|-|\*|\/)?=\s*/.test(t) && !/^(\w+)\s*\(/.test(t)) return `Asigna un valor: ${c(t.replace(/;$/, '').slice(0, 120))}.`;
   if ((m = t.match(/^['"]?([\w$-]+)['"]?\s*:\s*(.+?),?$/))) return `Propiedad ${c(m[1])} del objeto, con valor ${c(m[2].replace(/,$/, '').slice(0, 90))}.`;
   if (/^\{.*\}[,;]?$/.test(t)) return `Elemento de la lista: ${c(t.slice(0, 120))}.`;

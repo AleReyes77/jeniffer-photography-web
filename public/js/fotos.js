@@ -51,3 +51,5 @@ window.JF_SPIRAL_PHOTOS = [
   "img/cumpleanos/cumpleanos-show-de-payasos.webp"
 ];
 
+/* Miniaturas de 480 px (generadas con npm run recursos) para las galerías donde las fotos se ven pequeñas. */
+window.JF_PHOTOS_MINI = window.JF_PHOTOS.map(function (ruta) { return ruta.replace(/^img\//, 'img/miniaturas/'); });

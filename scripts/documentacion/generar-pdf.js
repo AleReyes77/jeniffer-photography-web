@@ -13,6 +13,7 @@
  */
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { explicarCss, explicarHtml, explicarJs, esc } from './explicadores.js';
@@ -30,13 +31,13 @@ const version = JSON.parse(readFileSync(path.join(RAIZ, 'package.json'), 'utf8')
    Orden del documento
    --------------------------------------------------------------------------- */
 const CAPITULOS = [
-  { titulo: 'Configuración del proyecto', intro: 'Archivos que definen cómo se instala, ejecuta, prueba, formatea y publica el proyecto.', archivos: ['package.json', '.env.example', '.gitignore', '.gitattributes', '.editorconfig', '.htmlvalidate.json', '.vscode/settings.json', '.vscode/extensions.json', 'Dockerfile', '.dockerignore', 'render.yaml', '.github/workflows/ci.yml'] },
-  { titulo: 'Backend (servidor)', intro: 'El servidor Node.js + Express: configuración, utilidades, seguridad, rutas de la API, aplicación y arranque. Explicado línea por línea.', archivos: ['server/config.js', 'server/lib/validacion.js', 'server/lib/almacen.js', 'server/lib/registro.js', 'server/lib/correo.js', 'server/middleware/seguridad.js', 'server/routes/api.js', 'server/app.js', 'server/index.js'] },
-  { titulo: 'Herramientas', intro: 'Scripts de apoyo para el control de calidad.', archivos: ['scripts/verificar-recursos.js'] },
-  { titulo: 'Pruebas automáticas', intro: '45 pruebas con el ejecutor nativo de Node (node:test) y Supertest.', archivos: ['tests/ayudantes.js', 'tests/validacion.test.js', 'tests/api.test.js', 'tests/sitio.test.js', 'tests/config-correo.test.js'] },
+  { titulo: 'Configuración del proyecto', intro: 'Archivos que definen cómo se instala, ejecuta, prueba, formatea y publica el proyecto.', archivos: ['package.json', '.env.example', '.gitignore', '.gitattributes', '.editorconfig', '.htmlvalidate.json', '.vscode/settings.json', '.vscode/extensions.json', 'Dockerfile', '.dockerignore', 'ecosystem.config.cjs', '.github/workflows/ci.yml', '.github/workflows/codeql.yml', '.github/dependabot.yml'] },
+  { titulo: 'Backend (servidor)', intro: 'El servidor Node.js + Express: configuración, registro, seguridad, ruta de salud, aplicación y arranque. Explicado línea por línea.', archivos: ['server/config.js', 'server/lib/registro.js', 'server/middleware/seguridad.js', 'server/routes/api.js', 'server/app.js', 'server/index.js'] },
+  { titulo: 'Herramientas', intro: 'Scripts de apoyo para el control de calidad.', archivos: ['scripts/preparar-recursos.js', 'scripts/verificar-recursos.js'] },
+  { titulo: 'Pruebas automáticas', intro: '31 pruebas con el ejecutor nativo de Node (node:test) y Supertest.', archivos: ['tests/ayudantes.js', 'tests/api.test.js', 'tests/sitio.test.js'] },
   { titulo: 'Frontend: página y archivos públicos', intro: 'Lo que descarga el navegador del visitante (carpeta public/).', archivos: ['public/index.html', 'public/404.html', 'public/robots.txt', 'public/sitemap.xml', 'public/site.webmanifest', 'public/_headers', 'public/.htaccess'] },
-  { titulo: 'Frontend: JavaScript', intro: 'Scripts del sitio, en el orden en que se cargan.', archivos: ['public/js/fotos.js', 'public/js/main.js', 'public/js/sitio.js', 'public/js/reservas.js'] },
-  { titulo: 'Frontend: estilos', intro: 'La hoja de estilos completa, línea por línea.', archivos: ['public/css/styles.css'] },
+  { titulo: 'Frontend: JavaScript', intro: 'Scripts del sitio, en el orden en que se cargan.', archivos: ['public/js/fotos.js', 'public/js/main.js', 'public/js/sitio.js'] },
+  { titulo: 'Frontend: estilos', intro: 'La hoja de estilos completa, línea por línea, y las fuentes.', archivos: ['public/css/fuentes.css', 'public/css/styles.css'] },
 ];
 
 /* ---------------------------------------------------------------------------
@@ -159,7 +160,7 @@ function renderArchivo(rel) {
         }
       } else if (ext === '.css') explicacion = explicarCss(t);
       else if (ext === '.xml') explicacion = explicarXml(t);
-      else if (ext === '.js') explicacion = explicarJs(t);
+      else if (ext === '.js' || ext === '.cjs') explicacion = explicarJs(t);
       else explicacion = 'Línea de configuración.';
       if (mano && !/^(\/\/|\/\*|\*)/.test(t) && !/^[}\])]+[;,)]*$/.test(t)) estadisticas.sinEmparejar.push(`${rel}:${i + 1} (automática) ${t.slice(0, 60)}`);
     }
@@ -191,7 +192,7 @@ const DESCRIPCION = {
   '.vscode': 'Ajustes y extensiones recomendadas de VS Code.', docs: 'Documentación técnica (Markdown) y este PDF.', public: 'El sitio web: todo lo que se envía al navegador.',
   'public/css': 'Hoja de estilos.', 'public/js': 'Scripts del navegador.', 'public/img': 'Fotografías e íconos en WebP, PNG y JPG.', 'public/img/hero': 'Portada y «A través del lente» (con versiones para celular).',
   'public/img/bodas': 'Fotos de bodas.', 'public/img/quinceanos': 'Fotos de quinceaños.', 'public/img/cumpleanos': 'Fotos de cumpleaños.', 'public/img/desfiles': 'Fotos de desfiles y bandas.',
-  'public/img/sesiones': 'Sesiones de bebé y paisaje.', 'public/img/og': 'Imagen para compartir en redes (1200×630).', 'public/img/icons': 'Íconos del sitio y de la app instalable.', 'public/descargas': 'Archivos de precios descargables.',
+  'public/img/sesiones': 'Sesiones de bebé y paisaje.', 'public/img/og': 'Imagen para compartir en redes (1200×630).', 'public/img/icons': 'Íconos del sitio y de la app instalable.', 'public/descargas': 'Archivos de precios descargables.', 'public/vendor': 'Librerías y fuentes servidas desde el propio dominio (generado con npm run recursos).', 'public/vendor/fonts': 'Fuentes .woff2 (Poppins, Dancing Script, Inter, Inter Tight, Monoton).', 'public/img/miniaturas': 'Miniaturas de 480 px para las galerías donde las fotos se ven pequeñas.', 'docs/MANTENIMIENTO.md': 'Seguridad, deuda técnica y operación.', 'docs/guia-buenas-practicas.pdf': 'Guía explicada desde cero: seguridad, repositorio público, publicación.', 'ecosystem.config.cjs': 'Configuración de PM2 para mantener el servidor encendido en un VPS.', 'public/css/fuentes.css': 'Reglas @font-face de las fuentes locales (generado).',
   scripts: 'Herramientas de desarrollo.', 'scripts/documentacion': 'Generador de este PDF.', 'scripts/documentacion/anotaciones': 'Explicaciones escritas a mano usadas por el generador.',
   server: 'Backend Node.js + Express.', 'server/lib': 'Utilidades: validación, almacén, correo y registro.', 'server/middleware': 'Middlewares de seguridad.', 'server/routes': 'Rutas de la API.', tests: 'Pruebas automáticas.',
   'README.md': 'Documentación principal del repositorio.', 'CHANGELOG.md': 'Registro de cambios por versión.', 'SECURITY.md': 'Cómo reportar vulnerabilidades.', 'CONTRIBUTING.md': 'Cómo contribuir.', LICENSE: 'Licencia: todos los derechos reservados.',
@@ -201,10 +202,14 @@ const DESCRIPCION = {
   'public/favicon.svg': 'Ícono vectorial de la pestaña.', 'public/descargas/LEEME.txt': 'Instrucciones para los archivos de precios.',
   '.github/PULL_REQUEST_TEMPLATE.md': 'Plantilla de Pull Request.', '.github/ISSUE_TEMPLATE/reporte-de-error.md': 'Plantilla para reportar errores.',
 };
-const IGNORAR = new Set(['node_modules', '.git', 'data']);
+/** Archivos que forman parte del repositorio (lo que Git versiona, sin los ignorados). */
+const VERSIONADOS = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { cwd: RAIZ, encoding: 'utf8' })
+  .split('\n').filter(Boolean).filter((r) => existsSync(path.join(RAIZ, r)));
+const CARPETAS = new Set(VERSIONADOS.flatMap((r) => r.split('/').slice(0, -1).map((_, i, p) => p.slice(0, i + 1).join('/'))));
+const visible = (rel) => VERSIONADOS.includes(rel) || CARPETAS.has(rel);
 
 function arbol(dir = RAIZ, prefijo = '', rel = '') {
-  const entradas = readdirSync(dir).filter((n) => !IGNORAR.has(n)).sort((a, b) => {
+  const entradas = readdirSync(dir).filter((n) => visible(rel ? `${rel}/${n}` : n)).sort((a, b) => {
     const da = statSync(path.join(dir, a)).isDirectory(); const db = statSync(path.join(dir, b)).isDirectory();
     return da === db ? a.localeCompare(b) : da ? -1 : 1;
   });
@@ -305,16 +310,19 @@ tr.bloque td { background: #fff8e6; border-left: 4px solid #e0a526; padding: 6px
 <li><b>Pruebas:</b> resumen por archivo y explicación de cada línea (grupos, casos y comprobaciones).</li>
 </ul>
 <p>El documento se genera automáticamente con <code>npm run docs:pdf</code>, así que se puede volver a crear cada vez que cambie el código.</p>
-<h2 style="margin-top:14px">Cómo viaja una reserva por el sistema</h2>
-<div class="flujo">Visitante completa el formulario (public/index.html)
-  └─► reservas.js valida en el navegador y envía  POST /api/reservas  (JSON)
-        └─► server/app.js:  Helmet → compresión → json (≤10 KB) → routes/api.js
-              └─► límite por IP (express-rate-limit) ── excedido ──► 429
-              └─► validacion.js ── inválido ──► 422 con errores por campo
-                                └─ honeypot lleno ──► 201 (spam descartado)
-              └─► almacen.js   agrega una línea a data/reservas.jsonl
-              └─► correo.js    envía el aviso por SMTP (si falla, solo se registra)
-              └─► 201 { ok, id }  ──► reservas.js muestra «¡Gracias!»</div>
+<h2 style="margin-top:14px">Cómo viaja una visita por el sistema</h2>
+<div class="flujo">Visitante escribe el dominio en el navegador
+  └─► Servidor Node.js (server/index.js → server/app.js)
+        ├─ Helmet: CSP solo del propio dominio, HSTS, nosniff…
+        ├─ compression: comprime con gzip
+        └─ express.static(public/) entrega index.html (no-cache)
+  └─► El navegador lee index.html y pide, todo al mismo servidor:
+        ├─ css/fuentes.css · vendor/bootstrap · css/styles.css
+        ├─ foto de portada (precargada) y fuentes de la portada
+        └─ scripts con defer: vendor/three · vendor/gsap · js/fotos · js/main · js/sitio
+  └─► Al desplazarse: JF_alAcercarse inicia la espiral y el parallax (miniaturas)
+  └─► Al abrir una galería: cargarFotosAlAbrir descarga sus fotos
+  └─► «Escríbeme por WhatsApp» ──► wa.me/50584329491 (fuera del sitio)</div>
 </section>
 
 <section class="capitulo"><h2>2. Carpetas y archivos</h2>

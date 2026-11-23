@@ -7,9 +7,8 @@ No abras un *issue* público. Escribe a **jenifferariana95@gmail.com** con el as
 
 ## Medidas implementadas
 
-- Content-Security-Policy estricta (sin scripts en línea), HSTS en producción y Permissions-Policy.
-- Validación y limpieza de toda la entrada en el servidor; límite de 10 KB por petición.
-- Límite de envíos por IP y campo trampa contra robots.
-- Escape del contenido del visitante en los correos.
-- Secretos solo en variables de entorno (`.env` está fuera del repositorio).
-- `npm audit` en cada ejecución de la CI.
+- Content-Security-Policy estricta: scripts, estilos y fuentes solo del propio dominio; sin scripts en línea; sin formularios.
+- HSTS en producción, Permissions-Policy (solo cámara), X-Content-Type-Options y Referrer-Policy.
+- El sitio no recibe ni guarda datos de visitantes (reservas por WhatsApp).
+- Sin secretos en el repositorio; .env, llaves y bases de datos ignorados por Git; secret scanning de GitHub.
+- Dependabot, CodeQL y npm audit en cada cambio.

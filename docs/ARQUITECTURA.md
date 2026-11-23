@@ -3,55 +3,39 @@
 ## Visión general
 
 ```
-Navegador ──HTTP──► Express (server/app.js)
-                      ├─ Helmet (CSP, HSTS, etc.) + Permissions-Policy
-                      ├─ compression (gzip)
-                      ├─ /api ─► json/urlencoded (10 KB) ─► routes/api.js
-                      │            ├─ GET  /salud
-                      │            └─ POST /reservas ─► rate limit ─► validacion.js
-                      │                                   ├─► almacen.js  (data/reservas.jsonl)
-                      │                                   └─► correo.js   (SMTP / Nodemailer)
-                      ├─ express.static(public/)  con Cache-Control por tipo
-                      ├─ 404 (JSON en /api, 404.html en el resto)
-                      └─ manejador de errores
+Navegador ──HTTPS──► Express (server/app.js)
+                       ├─ Helmet: CSP solo 'self', HSTS, nosniff, Referrer-Policy
+                       ├─ Permissions-Policy (solo cámara)
+                       ├─ compression (gzip, > 1 KB)
+                       ├─ /index.html → / (301)
+                       ├─ /api/salud
+                       ├─ express.static(public/) con Cache-Control por tipo de archivo
+                       ├─ 404 (JSON en /api, 404.html en el resto)
+                       └─ manejador de errores (sin detalles al visitante)
+
+Visitante ──toca «Escríbeme por WhatsApp»──► wa.me/50584329491 (fuera del sitio)
 ```
 
 ## Decisiones de diseño
 
 | Decisión | Motivo |
 |----------|--------|
-| **Un solo servidor sirve sitio y API** | Mismo origen: sin CORS, una sola URL que mantener y un despliegue más simple. |
-| **`app.js` separado de `index.js`** | La app se prueba con Supertest sin abrir puertos; `index.js` solo arranca y apaga. |
-| **Inyección de dependencias** (`crearApp({ config, almacen, correo, registro })`) | Las pruebas reemplazan el correo y el almacén por versiones falsas sin tocar la red ni el disco real. |
-| **Archivo JSON Lines en vez de base de datos** | El volumen de un portafolio es bajo. Sin servicios externos, sin costo y fácil de leer. Una cola interna evita que dos escrituras simultáneas mezclen líneas. Si el volumen crece se cambia `almacen.js` por una base de datos sin tocar el resto. |
-| **El correo nunca bloquea la reserva** | Si el SMTP falla la reserva ya está guardada; se confirma al visitante y el error queda en el log. |
-| **Validación en servidor como fuente de verdad** | El navegador valida para dar respuesta inmediata, pero el servidor vuelve a validar todo. |
-| **Honeypot + rate limit** en lugar de CAPTCHA | Frena la mayoría del spam sin molestar a las personas ni cargar scripts de terceros. |
-| **CSP estricta sin `unsafe-inline` en scripts** | Bloquea la inyección de código. Por eso no hay `onclick=""` en el HTML (está probado). |
-| **CSS y JS con `Cache-Control: no-cache`** | No llevan huella en el nombre; el navegador revalida con ETag (304) y los cambios se ven al instante. Las imágenes se guardan 30 días. |
-| **Configuración inmutable** (`Object.freeze`) | Ningún módulo puede cambiar la configuración por accidente en tiempo de ejecución. |
-| **ESM (`"type": "module"`) y Node ≥ 22.9** | Sintaxis moderna, `--env-file` y `--watch` nativos: no hacen falta `dotenv` ni `nodemon`. |
+| **Reservas por WhatsApp en vez de formulario** | Es el canal que usan los clientes en Nicaragua. Elimina toda entrada de datos al servidor: sin validación, sin base de datos, sin correo SMTP ni contraseñas que proteger. Menos código = menos riesgo. |
+| **Servidor Node.js mínimo** | Solo sirve archivos con seguridad, compresión y caché correctas. Tres dependencias de producción (express, helmet, compression). |
+| **Todo desde el propio dominio** | Fuentes, Three.js, GSAP y Bootstrap viven en `public/vendor/`. Sin conexiones a terceros: carga más rápida, el sitio no se cae si un CDN falla y la CSP puede ser estricta (`'self'`). |
+| **Recursos generados con un script** (`npm run recursos`) | Las librerías se instalan con npm (versiones exactas en `package-lock.json`) y un script las copia. Actualizar = cambiar la versión + volver a ejecutarlo. |
+| **Carga diferida de galerías** | La espiral y el parallax se inician al acercarse (IntersectionObserver); los sliders descargan sus fotos al abrirse; la galería parallax usa miniaturas de 480 px. |
+| **`app.js` separado de `index.js`** | La app se prueba con Supertest sin abrir puertos. |
+| **Configuración inmutable** | `Object.freeze` impide cambios accidentales en tiempo de ejecución. |
+| **CSS y JS con `no-cache`, `/vendor` con caché de 1 año** | Los archivos propios no llevan huella en el nombre: se revalidan (304) y los cambios se ven al instante. Los de `/vendor` llevan la versión en la ruta, así que nunca cambian. |
 
 ## Frontend
 
-El sitio es una sola página (`public/index.html`) con scripts clásicos cargados al final del `<body>`,
-en este orden (el orden importa):
+Scripts cargados con `defer` al final del `<body>`, en este orden:
 
-1. **CDN:** jQuery 3.7.1, Three.js r128, GSAP 3.12.5 y ScrollTrigger.
-2. `js/fotos.js`: define `window.JF_PHOTOS` y `window.JF_SPIRAL_PHOTOS` (rutas de las fotos).
-3. `js/main.js`: todo el comportamiento visual (cursor, paneles, sliders 3D, espiral, parallax, capas, cámara, selfie).
-4. `js/sitio.js`: enlaces directos a galerías, aviso de la espiral y estado de los botones de precios.
-5. `js/reservas.js`: formulario de reservas.
+1. `vendor/three-0.128.0/three.min.js`, `vendor/gsap-3.12.5/gsap.min.js`, `ScrollTrigger.min.js`
+2. `js/fotos.js`: `JF_PHOTOS`, `JF_SPIRAL_PHOTOS` y `JF_PHOTOS_MINI` (miniaturas).
+3. `js/main.js`: comportamiento visual. El bloque 0 define `JF_alAcercarse` para la carga diferida.
+4. `js/sitio.js`: enlaces directos a galerías, aviso de la espiral y botones de precios.
 
-Los estilos están en un único `css/styles.css`, organizado en bloques numerados en el orden original de la cascada.
-
-## Seguridad
-
-- **Entrada:** límite de 10 KB, validación por lista blanca (tipo de evento), limpieza de caracteres de control,
-  tipos estrictos (un objeto en vez de texto se rechaza).
-- **Salida:** el contenido del visitante se escapa antes de ponerlo en el HTML del correo; nunca se insertan
-  datos del visitante en la página con `innerHTML`.
-- **Transporte:** HSTS y `upgrade-insecure-requests` en producción.
-- **Errores:** el visitante nunca ve detalles internos; la pila completa va solo al log.
-- **Secretos:** solo en variables de entorno; `.env` está en `.gitignore`.
-- **Dependencias:** `npm audit` en la CI.
+Estilos: `css/fuentes.css` (generado), `vendor/bootstrap-5.3.2/bootstrap.min.css` (recortado) y `css/styles.css`.

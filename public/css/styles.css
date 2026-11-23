@@ -865,22 +865,22 @@ body.travel-on .travel-section, body.wildlife-on .wildlife-section, body.nature-
 .spread-fx-gallery li:nth-of-type(9) { background-position: right top; }
 
 /* Imágenes */
-.spread-fx-gallery ul:nth-of-type(1) li { background-image: url("../img/desfiles/desfile-palillona-sombrero-rosa.webp"); }
+.spread-fx-gallery ul:nth-of-type(1) li { background-image: url("../img/miniaturas/desfiles/desfile-palillona-sombrero-rosa.webp"); }
 .spread-fx-gallery ul:nth-of-type(1) { width: 120px; height: 80px; }
 
-.spread-fx-gallery ul:nth-of-type(2) li { background-image: url("../img/desfiles/desfile-banda-tambor-azul.webp"); }
+.spread-fx-gallery ul:nth-of-type(2) li { background-image: url("../img/miniaturas/desfiles/desfile-banda-tambor-azul.webp"); }
 .spread-fx-gallery ul:nth-of-type(2) { width: 90px; height: 130px; }
 
-.spread-fx-gallery ul:nth-of-type(3) li { background-image: url("../img/desfiles/desfile-banda-tambor-celeste.webp"); }
+.spread-fx-gallery ul:nth-of-type(3) li { background-image: url("../img/miniaturas/desfiles/desfile-banda-tambor-celeste.webp"); }
 .spread-fx-gallery ul:nth-of-type(3) { width: 130px; height: 90px; }
 
-.spread-fx-gallery ul:nth-of-type(4) li { background-image: url("../img/desfiles/desfile-ninos-banda-de-tambores.webp"); }
+.spread-fx-gallery ul:nth-of-type(4) li { background-image: url("../img/miniaturas/desfiles/desfile-ninos-banda-de-tambores.webp"); }
 .spread-fx-gallery ul:nth-of-type(4) { width: 120px; height: 80px; }
 
-.spread-fx-gallery ul:nth-of-type(5) li { background-image: url("../img/desfiles/desfile-nina-banda-celeste.webp"); }
+.spread-fx-gallery ul:nth-of-type(5) li { background-image: url("../img/miniaturas/desfiles/desfile-nina-banda-celeste.webp"); }
 .spread-fx-gallery ul:nth-of-type(5) { width: 64px; height: 84px; }
 
-.spread-fx-gallery ul:nth-of-type(6) li { background-image: url("../img/desfiles/desfile-palillona-blanco-y-dorado.webp"); }
+.spread-fx-gallery ul:nth-of-type(6) li { background-image: url("../img/miniaturas/desfiles/desfile-palillona-blanco-y-dorado.webp"); }
 .spread-fx-gallery ul:nth-of-type(6) { width: 100px; height: 66px; }
 
 @media (max-width: 700px) {
@@ -3078,29 +3078,15 @@ button,a,[role="button"]{-webkit-tap-highlight-color:transparent;}
 @media (max-width:900px){.seo-services__grid{grid-template-columns:1fr;max-width:460px;margin:0 auto}}
 
 /* ============================================================
-   FORMULARIO DE RESERVAS
+   RESERVAS POR WHATSAPP
    ============================================================ */
-.reserva{position:relative;z-index:3;background:#16171f;color:#fff;padding:clamp(4rem,10vh,7rem) var(--mobile-gutter,20px);border-top:1px solid rgba(255,255,255,.06)}
-.reserva h2{margin:0 auto 1rem;max-width:820px;text-align:center;font-family:'Inter Tight','Poppins',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3rem) !important;line-height:1.1}
-.reserva__form{max-width:820px;margin:0 auto;background:rgba(255,255,255,.04);border:1px solid rgba(134,107,175,.35);border-radius:18px;padding:clamp(1.25rem,3vw,2.25rem)}
-.reserva__grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.25rem}
-.reserva__campo{display:flex;flex-direction:column;gap:.4rem;min-width:0}
-.reserva__campo--ancho{grid-column:1 / -1}
-.reserva__campo label{font-weight:600;font-size:.92rem;color:#e6e2ee}
-.reserva__campo label span{color:#c2a9e8}
-.reserva__campo input,.reserva__campo select,.reserva__campo textarea{width:100%;min-height:46px;padding:.7rem .85rem;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#0f1016;color:#fff;font:inherit;font-size:1rem}
-.reserva__campo textarea{resize:vertical;min-height:130px}
-.reserva__campo input:focus,.reserva__campo select:focus,.reserva__campo textarea:focus{outline:2px solid #866BAF;outline-offset:1px;border-color:#866BAF}
-.reserva__campo [aria-invalid="true"]{border-color:#ff8fa8}
-.reserva__campo input[type="date"]{color-scheme:dark}
-.reserva__error{margin:0;min-height:1.2em;color:#ffb4c4;font-size:.85rem;max-width:none !important}
-.reserva__campo--trampa{position:absolute !important;left:-10000px;width:1px;height:1px;overflow:hidden}
-.reserva__enviar{margin-top:1.25rem;border:0;cursor:pointer}
-.reserva__enviar[disabled]{opacity:.6;cursor:progress}
-.reserva__estado{margin:1rem 0 0;min-height:1.4em;font-weight:600;max-width:none !important}
-.reserva__estado--ok{color:#9fe3b5}
-.reserva__estado--error{color:#ffb4c4}
-@media (max-width:640px){.reserva__grid{grid-template-columns:1fr}}
+.reserva{position:relative;z-index:3;background:#16171f;color:#fff;padding:clamp(4rem,10vh,7rem) var(--mobile-gutter,20px);border-top:1px solid rgba(255,255,255,.06);text-align:center}
+.reserva h2{margin:0 auto 1rem;max-width:820px;font-family:'Inter Tight','Poppins',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3rem) !important;line-height:1.1}
+.reserva__accion{display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.whatsapp-btn{display:inline-flex;align-items:center;gap:12px;min-height:56px;padding:14px 32px;border-radius:999px;background:#25D366;color:#0b2e17 !important;font:700 1.1rem 'Poppins',sans-serif;text-decoration:none;box-shadow:0 12px 30px rgba(37,211,102,.3);transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease}
+.whatsapp-btn:hover{background:#3be37a;transform:translateY(-2px);box-shadow:0 16px 36px rgba(37,211,102,.42)}
+.whatsapp-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.reserva__nota{margin:0;color:#d0ccd7;letter-spacing:.08em;max-width:none !important}
 
 /* Aviso de la galería espiral (ahora es un <button> accesible) */
 button.spiral-infos{border:0;font-family:inherit;line-height:1.3}

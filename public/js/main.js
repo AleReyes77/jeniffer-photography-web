@@ -1,3 +1,21 @@
+/* ---- bloque 0 ---- */
+/**
+ * Ejecuta una función una sola vez, cuando el elemento está por entrar en pantalla
+ * (400 px antes). Así las galerías pesadas no descargan fotos ni usan la tarjeta
+ * gráfica hasta que el visitante se acerca a ellas.
+ */
+window.JF_alAcercarse = function (elemento, funcion) {
+  if (!elemento) return;
+  if (!("IntersectionObserver" in window)) { funcion(); return; }
+  var observador = new IntersectionObserver(function (entradas) {
+    if (entradas.some(function (e) { return e.isIntersecting; })) {
+      observador.disconnect();
+      funcion();
+    }
+  }, { rootMargin: "400px 0px" });
+  observador.observe(elemento);
+};
+
 /* ---- bloque 1 ---- */
 /* Copia la foto del hero a la capa de fondo desenfocada */
 (function(){
@@ -156,7 +174,7 @@
 /* ============================================================
    1) CURSOR + OVERLAYS
    ============================================================ */
-(function ($) {
+(function () {
   "use strict";
 
   document.body.addEventListener("mousemove", function (n) {
@@ -175,17 +193,19 @@
   for (var r = document.querySelectorAll(".hover-target"), a = r.length - 1; a >= 0; a--) o(r[a]);
   function o(el) { el.addEventListener("mouseover", n); el.addEventListener("mouseout", s); }
 
-  $(".about-text").on("click",  () => $("body").addClass("about-on"));
-  $(".about-close").on("click", () => $("body").removeClass("about-on"));
-  $(".contact-text").on("click",  () => $("body").addClass("contact-on"));
-  $(".contact-close").on("click", () => $("body").removeClass("contact-on"));
-  $(".travel").on("click",       () => $("body").addClass("travel-on"));
-  $(".travel-close").on("click", () => $("body").removeClass("travel-on"));
-  $(".wildlife").on("click",       () => $("body").addClass("wildlife-on"));
-  $(".wildlife-close").on("click", () => $("body").removeClass("wildlife-on"));
-  $(".nature").on("click",       () => $("body").addClass("nature-on"));
-  $(".nature-close").on("click", () => $("body").removeClass("nature-on"));
-})(jQuery);
+  // [clase que abre, clase que cierra, nombre del panel] — sin jQuery: JavaScript nativo.
+  const PANELES = [
+    ["about-text", "about-close", "about"],
+    ["contact-text", "contact-close", "contact"],
+    ["travel", "travel-close", "travel"],
+    ["wildlife", "wildlife-close", "wildlife"],
+    ["nature", "nature-close", "nature"],
+  ];
+  PANELES.forEach(([abre, cierra, panel]) => {
+    document.querySelectorAll("." + abre).forEach((el) => el.addEventListener("click", () => document.body.classList.add(panel + "-on")));
+    document.querySelectorAll("." + cierra).forEach((el) => el.addEventListener("click", () => document.body.classList.remove(panel + "-on")));
+  });
+})();
 
 /* ============================================================
    SECCIÓN INTERMEDIA — MOVIMIENTO 3D CON EL RATÓN
@@ -517,7 +537,8 @@
       item.className = IMG_CLASS + (i === 0 ? " " + ACTIVE_IMG_CLASS : "");
       item.dataset.id = n;
       const img = document.createElement("img");
-      img.src = s.img; img.alt = s.title; img.loading = "lazy"; img.decoding = "async";
+      // La foto no se descarga hasta que se abre la galería (ver cargarFotosAlAbrir).
+      img.dataset.src = s.img; img.alt = s.title; img.decoding = "async";
       item.appendChild(img); imagesEl2.appendChild(item);
 
       const text = document.createElement("div");
@@ -536,6 +557,24 @@
   }
 
   document.querySelectorAll("[data-slider]").forEach(buildSlider);
+
+  /**
+   * Descarga las fotos de una galería solo cuando se abre (cuando <body> recibe la clase
+   * travel-on, wildlife-on o nature-on). Antes se descargaban 16 fotos grandes al abrir
+   * la página aunque nadie viera las galerías.
+   */
+  function cargarFotosAlAbrir() {
+    document.querySelectorAll("[data-slider]").forEach((el) => {
+      const panel = el.parentElement.className.split("-")[0]; // travel | wildlife | nature
+      if (el.dataset.cargado || !document.body.classList.contains(panel + "-on")) return;
+      el.dataset.cargado = "1";
+      el.querySelectorAll("img[data-src]").forEach((img) => { img.src = img.dataset.src; });
+      const activa = el.querySelector("." + ACTIVE_IMG_CLASS + " img");
+      if (activa) el.style.setProperty("--img-prev", `url(${activa.src})`);
+    });
+  }
+  new MutationObserver(cargarFotosAlAbrir).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  cargarFotosAlAbrir();
 })();
 
 /* ============================================================
@@ -1090,7 +1129,8 @@
     renderer.render(scene, camera);
   }
 
-  window.addEventListener('load', init);
+  // La espiral se inicia solo cuando el visitante se acerca a ella.
+  window.addEventListener('load', () => window.JF_alAcercarse(document.getElementById('spiral-gallery'), init));
 })();
 
 /* ============================================================
@@ -1226,7 +1266,8 @@
     { scale: 0.5, speed: 15, opacity: 0.4 }
   ];
 
-  const IMAGE_PATHS = (window.JF_PHOTOS || []).slice();
+  // Las fotos se ven de máximo 160 px: se usan las miniaturas de 480 px.
+  const IMAGE_PATHS = (window.JF_PHOTOS_MINI || window.JF_PHOTOS || []).slice();
 
   const parallaxContainer = document.getElementById('parallax-container');
   const loadingEl = document.getElementById('parallax-loading');
@@ -1477,7 +1518,8 @@
     requestAnimationFrame(animate);
   }
 
-  loadAll();
+  // La galería se carga solo cuando el visitante se acerca a ella.
+  window.JF_alAcercarse(document.getElementById('parallax-gallery'), loadAll);
 
   function getX(e) {
     return e.touches ? e.touches[0].clientX : e.clientX;
@@ -1587,4 +1629,4 @@
 })();
 
 /* ---- bloque 9 ---- */
-(function(){var P=window.JF_PHOTOS||[];document.querySelectorAll("[data-photo]").forEach(function(el){var s=P[+el.getAttribute("data-photo")];if(s)el.style.backgroundImage="url(\""+s+"\")";});var spread=[12,13,14,15,16,18];document.querySelectorAll(".spread-fx-gallery ul").forEach(function(ul,i){var s=P[spread[i%spread.length]];if(!s)return;ul.querySelectorAll("li").forEach(function(li){li.style.backgroundImage="url(\""+s+"\")";});});})();
+(function(){var P=window.JF_PHOTOS_MINI||window.JF_PHOTOS||[];document.querySelectorAll("[data-photo]").forEach(function(el){var s=P[+el.getAttribute("data-photo")];if(s)el.style.backgroundImage="url(\""+s+"\")";});var spread=[12,13,14,15,16,18];document.querySelectorAll(".spread-fx-gallery ul").forEach(function(ul,i){var s=P[spread[i%spread.length]];if(!s)return;ul.querySelectorAll("li").forEach(function(li){li.style.backgroundImage="url(\""+s+"\")";});});})();
