@@ -1,0 +1,150 @@
+/**
+ * Explicaciones de los archivos de configuración.
+ * Se usa un diccionario por archivo: la clave es el nombre de la propiedad, variable,
+ * instrucción o patrón de cada línea; el generador la detecta y busca su explicación.
+ */
+export default {
+  'package.json': {
+    resumen: 'Manifiesto del proyecto Node.js: nombre, versión, tipo de módulos, versión mínima de Node, comandos (scripts) y dependencias. npm lo lee para instalar y ejecutar todo.',
+    claves: {
+      name: 'Nombre técnico del paquete (minúsculas y guiones).',
+      version: 'Versión según SemVer (MAYOR.MENOR.PARCHE): 2.0.0 porque la estructura cambió respecto a la 1.0.0. Se muestra en /api/salud.',
+      private: '<code>true</code> impide publicar el proyecto en npm por accidente.',
+      description: 'Descripción del proyecto.',
+      type: '<code>"module"</code>: los archivos .js usan módulos ES (import/export) en lugar de require.',
+      main: 'Archivo principal del paquete.',
+      engines: 'Versiones de Node compatibles.',
+      node: '<code>>=22.9</code>: necesaria por <code>--env-file-if-exists</code> y <code>--watch</code> nativos.',
+      scripts: 'Comandos que se ejecutan con <code>npm run &lt;nombre&gt;</code>.',
+      start: '<code>npm start</code>: inicia el servidor (lo usan Render y Docker).',
+      dev: '<code>npm run dev</code>: modo desarrollo; <code>--watch</code> reinicia al guardar y <code>--env-file-if-exists</code> carga .env si existe.',
+      'start:env': 'Inicia leyendo obligatoriamente el archivo .env.',
+      test: 'Ejecuta todas las pruebas <code>tests/**/*.test.js</code> con el ejecutor nativo de Node y el formato «spec» (legible).',
+      'test:cobertura': 'Pruebas con informe de cobertura: qué porcentaje del código ejecutan.',
+      'lint:html': 'Valida el HTML con html-validate.',
+      'check:recursos': 'Comprueba que no falte ningún archivo enlazado.',
+      verificar: 'Encadena validación, recursos y pruebas con <code>&&</code>: si uno falla, se detiene. Es lo que corre la CI.',
+      keywords: 'Palabras clave del paquete.',
+      author: 'Autora.',
+      license: 'Licencia: remite al archivo LICENSE (todos los derechos reservados).',
+      dependencies: 'Dependencias necesarias en producción. El prefijo <code>^</code> acepta actualizaciones compatibles (misma versión mayor).',
+      compression: 'Compresión gzip de las respuestas.',
+      express: 'Framework web: rutas, middlewares y archivos estáticos.',
+      'express-rate-limit': 'Límite de peticiones por IP.',
+      helmet: 'Cabeceras HTTP de seguridad.',
+      nodemailer: 'Envío de correos por SMTP.',
+      devDependencies: 'Dependencias solo para desarrollo y pruebas (no se instalan en producción con --omit=dev).',
+      'html-validate': 'Validador de HTML.',
+      supertest: 'Cliente HTTP para probar Express sin abrir puertos.',
+    },
+  },
+  '.env.example': {
+    resumen: 'Plantilla de variables de entorno. Se copia como .env (que nunca se sube a GitHub) y se completa con los valores reales. Cada variable está documentada también en el README.',
+    claves: {
+      NODE_ENV: '<code>production</code> activa HSTS y upgrade-insecure-requests.',
+      PORT: 'Puerto del servidor.',
+      SITE_URL: 'URL pública del sitio, sin barra final.',
+      TRUST_PROXY: '<code>true</code> detrás de un proxy para obtener la IP real del visitante.',
+      RATE_LIMIT_WINDOW_MIN: 'Ventana del límite de reservas, en minutos.',
+      RATE_LIMIT_MAX: 'Máximo de reservas por IP en esa ventana.',
+      RESERVAS_FILE: 'Archivo JSON Lines de reservas.',
+      SMTP_HOST: 'Servidor de correo saliente.',
+      SMTP_PORT: 'Puerto SMTP (465 SSL, 587 STARTTLS).',
+      SMTP_SECURE: '<code>true</code> para el puerto 465.',
+      SMTP_USER: 'Usuario de la cuenta de correo.',
+      SMTP_PASS: 'Contraseña; en Gmail, una «contraseña de aplicación» de 16 caracteres.',
+      CONTACT_FROM: 'Remitente de las notificaciones.',
+      CONTACT_TO: 'Quién recibe las notificaciones de reserva.',
+    },
+  },
+  '.gitignore': {
+    resumen: 'Lista de archivos que Git no debe guardar: dependencias descargables, secretos, datos de ejecución y archivos del sistema.',
+    claves: {
+      'node_modules/': 'Dependencias: se reinstalan con npm install (pesan cientos de MB).',
+      '.env': 'Contraseñas y configuración privada: nunca deben subirse.',
+      '.env.*': 'Variantes del .env (.env.local, .env.production…).',
+      '!.env.example': 'El «!» hace una excepción: la plantilla sí se sube.',
+      'data/': 'Reservas generadas en ejecución (datos personales de clientes).',
+      '.DS_Store': 'Archivo oculto de macOS.', 'Thumbs.db': 'Caché de miniaturas de Windows.',
+      '.vscode/*': 'Configuración personal de VS Code…',
+      '!.vscode/extensions.json': '…excepto las extensiones recomendadas…', '!.vscode/settings.json': '…y los ajustes compartidos del proyecto.',
+      '*.log': 'Registros.', 'coverage/': 'Informes de cobertura.',
+    },
+  },
+  '.gitattributes': {
+    resumen: 'Indica a Git cómo tratar los finales de línea y qué archivos son binarios. Evita diferencias falsas entre Windows (CRLF) y Linux (LF).',
+    claves: {
+      '*': '<code>text=auto eol=lf</code>: los archivos de texto se guardan con finales de línea LF en todos los sistemas.',
+      '*.webp': 'Binario: Git no intenta compararlo línea por línea ni cambiar sus bytes.', '*.jpg': 'Binario.', '*.png': 'Binario.', '*.pdf': 'Binario.', '*.ico': 'Binario.',
+    },
+  },
+  '.dockerignore': {
+    resumen: 'Archivos que no se copian a la imagen Docker: la hacen más liviana y evitan meter secretos o datos.',
+    claves: { node_modules: 'Se instalan dentro de la imagen.', '.git': 'Historial de Git (innecesario).', '.github': 'CI.', '.vscode': 'Editor.', '.env': 'Secretos: se pasan al ejecutar, no se hornean en la imagen.', data: 'Datos locales.', tests: 'Pruebas.', docs: 'Documentación.', '*.md': 'Archivos Markdown.' },
+  },
+  '.editorconfig': {
+    resumen: 'Reglas de formato que respetan casi todos los editores (VS Code con extensión): mismas sangrías y finales de línea para cualquiera que edite el proyecto.',
+    claves: { root: 'Este es el archivo raíz: no se buscan otros en carpetas superiores.', '[*]': 'Las reglas siguientes aplican a todos los archivos.', charset: 'Codificación UTF-8.', end_of_line: 'Finales de línea LF.', insert_final_newline: 'Salto de línea al final del archivo.', indent_style: 'Sangría con espacios.', indent_size: '2 espacios por nivel.', trim_trailing_whitespace: 'Elimina espacios sobrantes al final de cada línea.' },
+  },
+  '.htmlvalidate.json': {
+    resumen: 'Configuración del validador de HTML: parte de las reglas recomendadas y desactiva solo las de estilo que no aportan a la calidad de este sitio.',
+    claves: { extends: 'Hereda el conjunto de reglas recomendado.', rules: 'Ajustes de reglas individuales:', 'no-inline-style': 'Se permiten atributos style (el diseño original los usa).', 'attribute-boolean-style': 'No exige un estilo concreto para atributos booleanos.', 'void-style': 'No exige un estilo para etiquetas vacías como &lt;img&gt;.', 'no-trailing-whitespace': 'Ignora espacios al final de línea.', 'long-title': 'Permite títulos de más de 70 caracteres en la validación (el SEO se controla en las pruebas).' },
+  },
+  '.vscode/settings.json': {
+    resumen: 'Ajustes de VS Code compartidos por el proyecto.',
+    claves: { 'liveServer.settings.port': 'Puerto de Live Server.', 'liveServer.settings.root': 'Live Server sirve la carpeta public/ (donde está el sitio).', 'editor.formatOnSave': 'No reformatea al guardar (evita cambios masivos accidentales).', 'files.encoding': 'UTF-8.', 'files.eol': 'Finales de línea LF.', 'html.format.wrapLineLength': '0 = no cortar líneas largas de HTML.', 'files.exclude': 'Archivos ocultos en el explorador:', '**/.DS_Store': 'archivos de macOS,', '**/node_modules': 'y dependencias.' },
+  },
+  '.vscode/extensions.json': {
+    resumen: 'Extensiones que VS Code recomienda instalar al abrir el proyecto.',
+    claves: { recommendations: 'Lista de extensiones:', 'ritwickdey.LiveServer': 'Live Server: sirve el sitio con recarga automática.', 'esbenp.prettier-vscode': 'Prettier: formateador de código.', 'ecmel.vscode-html-css': 'Autocompletado de clases CSS en el HTML.' },
+  },
+  'Dockerfile': {
+    resumen: 'Receta para construir una imagen Docker de producción: liviana (Alpine), solo dependencias de producción, usuario sin privilegios y chequeo de salud.',
+    claves: {
+      FROM: 'Imagen base: Node 22 sobre Alpine Linux (unos 50 MB).',
+      ENV: 'Fija NODE_ENV=production dentro del contenedor.',
+      WORKDIR: 'Carpeta de trabajo /app.',
+      COPY: 'Copia archivos al contenedor. package*.json se copia antes que el código para aprovechar la caché de capas: si solo cambia el código, no se reinstalan las dependencias.',
+      RUN: 'Ejecuta un comando al construir la imagen.',
+      USER: 'A partir de aquí todo corre como el usuario «node», sin privilegios de administrador (si alguien comprometiera el proceso, tendría acceso limitado).',
+      EXPOSE: 'Documenta que el contenedor escucha en el puerto 3000.',
+      HEALTHCHECK: 'Cada 30 s consulta /api/salud; tras 3 fallos Docker marca el contenedor como no saludable.',
+      CMD: 'Comando que se ejecuta al iniciar el contenedor. Se usa node directamente (no npm) para que reciba las señales SIGTERM.',
+    },
+  },
+  'render.yaml': {
+    resumen: 'Blueprint de Render.com: describe el servicio web para crearlo con un clic al conectar el repositorio.',
+    claves: { services: 'Lista de servicios.', type: 'Servicio web.', name: 'Nombre del servicio.', runtime: 'Entorno Node.', plan: 'Plan gratuito.', buildCommand: 'Instala solo dependencias de producción.', startCommand: 'Inicia el servidor.', healthCheckPath: 'Render consulta esta ruta para saber si el despliegue funciona.', envVars: 'Variables de entorno:', key: 'Nombre de la variable.', value: 'Valor fijo.', sync: '<code>false</code>: Render pedirá el valor al crear el servicio (secretos que no se escriben en el repositorio).' },
+  },
+  '.github/workflows/ci.yml': {
+    resumen: 'Integración continua con GitHub Actions: en cada push a main y en cada Pull Request, una máquina Ubuntu instala el proyecto y ejecuta todas las verificaciones en Node 22 y 24. Si algo falla, el PR muestra una ✖ roja.',
+    claves: {
+      name: 'Nombre del flujo o del paso.', on: 'Cuándo se ejecuta:', push: 'al subir cambios…', branches: '…a la rama main,', pull_request: 'y en cada Pull Request.',
+      permissions: 'Permisos mínimos del token de la CI…', contents: '…solo lectura del código (principio de mínimo privilegio).',
+      jobs: 'Trabajos.', verificar: 'El trabajo «verificar».', 'runs-on': 'Máquina virtual Ubuntu.', strategy: 'Estrategia de ejecución:', matrix: 'matriz: se repite el trabajo por cada valor…', node: '…en Node 22 y 24.',
+      steps: 'Pasos en orden:', uses: 'Usa una acción publicada (descargar el código / instalar Node).', with: 'Parámetros de la acción.', 'node-version': 'Versión de Node de la matriz.', cache: 'Guarda la caché de npm entre ejecuciones (instalaciones más rápidas).', run: 'Comando a ejecutar.',
+    },
+  },
+  'public/site.webmanifest': {
+    resumen: 'Manifiesto de aplicación web: define cómo se ve el sitio cuando se «instala» en la pantalla de inicio del celular (nombre, colores e íconos).',
+    claves: { name: 'Nombre completo.', short_name: 'Nombre corto bajo el ícono.', description: 'Descripción.', lang: 'Idioma.', start_url: 'Página que abre el ícono.', scope: 'Rutas que pertenecen a la app.', display: '<code>standalone</code>: se abre sin la barra del navegador, como una app.', background_color: 'Color de la pantalla de carga.', theme_color: 'Color de la barra del sistema.', icons: 'Íconos en varios tamaños:', src: 'Ruta del ícono.', sizes: 'Tamaño en píxeles.', type: 'Tipo de imagen.', purpose: '<code>maskable</code>: Android puede recortarlo en círculo o gota sin cortar el logo.' },
+  },
+  'public/robots.txt': {
+    resumen: 'Instrucciones para los robots de los buscadores: qué pueden rastrear y dónde está el sitemap.',
+    claves: { 'User-agent': 'A qué robots aplican las reglas (* = todos).', Allow: 'Permite rastrear todo el sitio.', Disallow: 'Excluye el archivo de instrucciones interno de descargas.', Sitemap: 'Ubicación del mapa del sitio con todas las imágenes.' },
+  },
+  'public/_headers': {
+    resumen: 'Cabeceras HTTP para Netlify (si se publica solo public/ como sitio estático). Equivalen a las que pone el servidor Express.',
+    claves: { '/*': 'Reglas para todas las rutas:', 'X-Content-Type-Options': 'nosniff: el navegador no "adivina" tipos de archivo.', 'Referrer-Policy': 'Privacidad al seguir enlaces externos.', 'X-Frame-Options': 'Solo este sitio puede mostrarlo en un iframe.', 'Permissions-Policy': 'Solo se permite la cámara.', '/img/*': 'Para las imágenes:', '/css/*': 'Para los estilos:', '/js/*': 'Para los scripts:', 'Cache-Control': 'Tiempo de caché (immutable = no revalidar durante ese tiempo).' },
+  },
+  'public/.htaccess': {
+    resumen: 'Configuración para servidores Apache (cPanel, Hostinger) cuando se publica solo public/: 404 personalizada, HTTPS obligatorio, URL única, tipos MIME, compresión, caché y seguridad.',
+    claves: {
+      ErrorDocument: 'Usa 404.html para las páginas inexistentes.', '<IfModule': 'Aplica las reglas solo si ese módulo de Apache está activo (evita errores 500).', '</IfModule>': 'Fin del bloque condicional.',
+      RewriteEngine: 'Activa las reglas de reescritura de URL.', RewriteCond: 'Condición para la regla siguiente.', RewriteRule: 'Regla de redirección (R=301 permanente, L = última regla).',
+      AddType: 'Declara el tipo MIME de una extensión.', AddOutputFilterByType: 'Comprime (DEFLATE/gzip) estos tipos de archivo.',
+      ExpiresActive: 'Activa los tiempos de caché.', ExpiresByType: 'Tiempo de caché por tipo de archivo.',
+      Header: 'Agrega una cabecera de seguridad a todas las respuestas.', Options: '<code>-Indexes</code>: impide listar el contenido de las carpetas.',
+    },
+  },
+};

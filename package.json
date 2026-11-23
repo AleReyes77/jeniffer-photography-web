@@ -16,7 +16,8 @@
     "test:cobertura": "node --test --experimental-test-coverage \"tests/**/*.test.js\"",
     "lint:html": "html-validate public/index.html public/404.html",
     "check:recursos": "node scripts/verificar-recursos.js",
-    "verificar": "npm run lint:html && npm run check:recursos && npm test"
+    "verificar": "npm run lint:html && npm run check:recursos && npm test",
+    "docs:pdf": "node scripts/documentacion/generar-pdf.js"
   },
   "keywords": [
     "fotografia",

@@ -136,6 +136,7 @@ arranca sin `.env`; en ese caso las reservas se guardan pero no se envían por c
 | `npm run lint:html` | Valida el HTML con html-validate. |
 | `npm run check:recursos` | Comprueba que existan todas las imágenes, estilos y scripts enlazados. |
 | `npm run verificar` | Todo lo anterior junto (lo que corre la CI). |
+| `npm run docs:pdf` | Regenera `docs/explicacion-del-codigo.pdf` (requiere Edge o Chrome). |
 
 ## Pruebas y calidad
 
