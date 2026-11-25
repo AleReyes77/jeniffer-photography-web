@@ -13,8 +13,23 @@ const config = cargarConfiguracion();
 const registro = crearRegistro({ nivel: config.esProduccion ? 'info' : 'debug' });
 const app = crearApp({ config, registro });
 
-const servidor = app.listen(config.puerto, () => {
-  registro.info('servidor-iniciado', { url: `http://localhost:${config.puerto}`, entorno: config.entorno });
+// Principio de mínimo privilegio: el servidor web nunca debe ejecutarse como administrador (root).
+if (typeof process.getuid === 'function' && process.getuid() === 0) {
+  registro.warn('ejecutando-como-root', { detalle: 'Ejecuta el sitio con un usuario sin privilegios (por ejemplo «node» o el usuario del hosting).' });
+}
+
+const servidor = app.listen(config.puerto, config.host, () => {
+  registro.info('servidor-iniciado', { url: `http://${config.host}:${config.puerto}`, entorno: config.entorno, httpsForzado: config.forzarHttps });
+});
+
+// Si el puerto ya está ocupado por otra aplicación, se explica claramente en vez de fallar en silencio.
+servidor.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    registro.error('puerto-ocupado', { puerto: config.puerto, detalle: 'Otra aplicación usa este puerto. Asigna otro con PORT y apúntalo desde el proxy.' });
+  } else {
+    registro.error('error-del-servidor', { error: error.message });
+  }
+  process.exit(1);
 });
 
 /** Deja de aceptar conexiones, termina las que están en curso y sale. */

@@ -17,6 +17,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
+        HOST: '127.0.0.1', // solo accesible a través de Nginx/Caddy, nunca directo desde internet
         TRUST_PROXY: 'true',
       },
     },

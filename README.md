@@ -67,7 +67,8 @@ jeniffer-photography-web/
 ├── tests/                  Pruebas automáticas
 ├── docs/                   Documentación técnica y PDFs
 ├── .github/                CI, CodeQL, Dependabot y plantillas
-├── Dockerfile · ecosystem.config.cjs · .env.example
+├── deploy/                 Nginx, Caddy (proxy inverso) y firewall
+├── Dockerfile · ecosystem.config.cjs · .env.example · .nvmrc · .npmrc
 └── package.json
 ```
 
@@ -105,7 +106,10 @@ Copia `.env.example` como `.env`. Ninguna es obligatoria y hoy ninguna es secret
 | `NODE_ENV` | `development` | `production` activa HSTS y `upgrade-insecure-requests`. |
 | `PORT` | `3000` | Puerto del servidor. |
 | `SITE_URL` | `http://localhost:3000` | URL pública del sitio. |
+| `HOST` | `127.0.0.1` | Dirección de escucha. 127.0.0.1 = solo a través del proxy (recomendado); Docker usa 0.0.0.0. |
 | `TRUST_PROXY` | `false` | `true` detrás de Nginx, Apache, Cloudflare o el panel del hosting. |
+| `FORCE_HTTPS` | sí en producción con proxy | Redirige HTTP → HTTPS (301). |
+| `RATE_LIMIT_WINDOW_SEC` / `RATE_LIMIT_MAX` | `60` / `300` | Límite de peticiones por IP. |
 
 ## Pruebas y calidad
 
@@ -122,7 +126,9 @@ La CI repite todo en Node 22 y 24 en cada cambio. Detalle en [docs/PRUEBAS.md](d
 ## Seguridad
 
 - Content-Security-Policy: scripts, estilos y fuentes **solo del propio dominio**; sin formularios (`form-action 'none'`).
-- HSTS en producción, Permissions-Policy (solo cámara), `nosniff`, sin `X-Powered-By`.
+- HTTPS obligatorio (301) y HSTS en producción, Permissions-Policy (solo cámara), `nosniff`, sin `X-Powered-By`.
+- Límite de peticiones por IP (429), servidor escuchando solo en 127.0.0.1 detrás de un proxy, registro de errores 5xx.
+- Accesibilidad verificada con axe-core: 0 problemas (contraste WCAG AA, nombres accesibles, regiones).
 - Sin contraseñas en el código; `.env`, llaves y bases de datos están en `.gitignore`.
 - Dependabot (actualizaciones semanales), CodeQL (análisis de seguridad) y `npm audit` en la CI.
 - Ver [SECURITY.md](SECURITY.md).
@@ -158,6 +164,7 @@ Antes de publicar:
 - [docs/PRUEBAS.md](docs/PRUEBAS.md) · [docs/SEO.md](docs/SEO.md) · [docs/MANTENIMIENTO.md](docs/MANTENIMIENTO.md)
 - [docs/explicacion-del-codigo.pdf](docs/explicacion-del-codigo.pdf): cada línea del código explicada.
 - [docs/guia-buenas-practicas.pdf](docs/guia-buenas-practicas.pdf): seguridad, mantenimiento y publicación explicados desde cero.
+- [docs/auditoria-seguridad.pdf](docs/auditoria-seguridad.pdf): auditoría completa del sitio y correcciones, con diagramas.
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Licencia

@@ -16,6 +16,32 @@ window.JF_alAcercarse = function (elemento, funcion) {
   observador.observe(elemento);
 };
 
+/**
+ * ¿Puede este navegador dibujar 3D (WebGL)? Algunos celulares antiguos, navegadores con la
+ * aceleración por hardware desactivada o en modo de ahorro no pueden. Se comprueba una sola vez.
+ */
+window.JF_webglDisponible = (function () {
+  try {
+    var lienzo = document.createElement("canvas");
+    return !!(window.WebGLRenderingContext && (lienzo.getContext("webgl2") || lienzo.getContext("webgl")));
+  } catch (error) {
+    return false;
+  }
+})();
+
+/**
+ * Muestra un mensaje dentro de una sección (por ejemplo, si una galería no puede cargarse).
+ * Usa textContent: el texto nunca se interpreta como HTML.
+ */
+window.JF_mostrarAviso = function (contenedor, texto) {
+  if (!contenedor) return;
+  var aviso = contenedor.querySelector(".aviso-galeria") || document.createElement("p");
+  aviso.className = "aviso-galeria";
+  aviso.setAttribute("role", "status");
+  aviso.textContent = texto;
+  contenedor.appendChild(aviso);
+};
+
 /* ---- bloque 1 ---- */
 /* Copia la foto del hero a la capa de fondo desenfocada */
 (function(){
@@ -544,7 +570,19 @@ window.JF_alAcercarse = function (elemento, funcion) {
       const text = document.createElement("div");
       text.className = TEXT_CLASS + (i === 0 ? " " + ACTIVE_TEXT_CLASS : "");
       text.dataset.id = n;
-      text.innerHTML = `<div class="slider__text-item-head"><h3>${s.title}</h3></div><div class="slider__text-item-info"><p>${s.text}</p></div>`;
+      // Se construye con textContent (no innerHTML): aunque algún día los textos vinieran
+      // de otra fuente, nunca se interpretarían como HTML ni como código.
+      const cabeza = document.createElement("div");
+      cabeza.className = "slider__text-item-head";
+      const titulo = document.createElement("h3");
+      titulo.textContent = s.title;
+      cabeza.appendChild(titulo);
+      const info = document.createElement("div");
+      info.className = "slider__text-item-info";
+      const parrafo = document.createElement("p");
+      parrafo.textContent = s.text;
+      info.appendChild(parrafo);
+      text.append(cabeza, info);
       textEl.appendChild(text);
 
       const dot = document.createElement("div");
@@ -568,9 +606,24 @@ window.JF_alAcercarse = function (elemento, funcion) {
       const panel = el.parentElement.className.split("-")[0]; // travel | wildlife | nature
       if (el.dataset.cargado || !document.body.classList.contains(panel + "-on")) return;
       el.dataset.cargado = "1";
-      el.querySelectorAll("img[data-src]").forEach((img) => { img.src = img.dataset.src; });
+      el.querySelectorAll("img[data-src]").forEach((img) => {
+        img.addEventListener("error", () => { img.alt = "No se pudo cargar esta foto. Revisa tu conexión."; }, { once: true });
+        img.src = img.dataset.src;
+      });
       const activa = el.querySelector("." + ACTIVE_IMG_CLASS + " img");
-      if (activa) el.style.setProperty("--img-prev", `url(${activa.src})`);
+      if (activa) {
+        el.style.setProperty("--img-prev", `url(${activa.src})`);
+        // Indicador de carga mientras llega la primera foto (se quita al cargar o al fallar).
+        if (!activa.complete) {
+          el.dataset.cargando = "1";
+          const listo = () => { delete el.dataset.cargando; };
+          activa.addEventListener("load", listo, { once: true });
+          activa.addEventListener("error", () => {
+            listo();
+            window.JF_mostrarAviso(el, "No se pudo cargar la galería. Revisa tu conexión e inténtalo de nuevo.");
+          }, { once: true });
+        }
+      }
     });
   }
   new MutationObserver(cargarFotosAlAbrir).observe(document.body, { attributes: true, attributeFilter: ["class"] });
@@ -977,6 +1030,11 @@ window.JF_alAcercarse = function (elemento, funcion) {
 
   async function init() {
     const container = document.getElementById('spiral-gallery');
+    if (!window.JF_webglDisponible) {
+      window.JF_mostrarAviso(container, 'Tu navegador no puede mostrar esta galería en 3D. Puedes ver las fotos en las galerías de bodas, quinceaños y cumpleaños.');
+      return;
+    }
+    window.JF_mostrarAviso(container, 'Cargando galería…');
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0f);
 
@@ -1023,6 +1081,8 @@ window.JF_alAcercarse = function (elemento, funcion) {
     }
 
     const texture = await createMasterTexture();
+    const avisoCarga = container.querySelector('.aviso-galeria');
+    if (avisoCarga) avisoCarga.remove();
 
     shaderMaterial = new THREE.ShaderMaterial({
       uniforms: { map: { value: texture }, gap: { value: config.gapSize }, offset: { value: 0.0 } },
@@ -1240,7 +1300,9 @@ window.JF_alAcercarse = function (elemento, funcion) {
     };
   }
 
-  window.addEventListener("load", () => new Experience());
+  window.addEventListener("load", () => {
+    if (window.JF_webglDisponible) new Experience();
+  });
 })();
 
 /* ---- bloque 7 ---- */
@@ -1301,6 +1363,13 @@ window.JF_alAcercarse = function (elemento, funcion) {
       currentImageIndex = 0;
     }
     return shuffledImages[currentImageIndex++];
+  }
+
+  // Sin WebGL, crear el motor 3D lanzaría un error que detendría TODO el resto de main.js
+  // (incluida la accesibilidad con teclado). Se muestra un aviso y se sale de este bloque.
+  if (!window.JF_webglDisponible) {
+    if (loadingEl) loadingEl.textContent = "Tu navegador no puede mostrar esta galería en 3D.";
+    return;
   }
 
   const scene = new THREE.Scene();
@@ -1581,7 +1650,8 @@ window.JF_alAcercarse = function (elemento, funcion) {
   var B = document.body;
   var labels = [
     [".about-text", "Abrir sobre mí"], [".contact-text", "Abrir contacto"],
-    [".hero-section .travel", "Ver galería de bodas"], [".hero-section .wildlife", "Ver galería de quinceaños"], [".hero-section .nature", "Ver galería de cumpleaños"],
+    // El nombre accesible empieza con el texto visible (WCAG 2.5.3): quien usa control por voz dice lo que ve.
+    [".hero-section .travel", "Boda: ver galería"], [".hero-section .wildlife", "Quinceaños: ver galería"], [".hero-section .nature", "Cumpleaños: ver galería"],
     [".about-close", "Cerrar sobre mí"], [".contact-close", "Cerrar contacto"], [".travel-close", "Cerrar galería de bodas"],
     [".wildlife-close", "Cerrar galería de quinceaños"], [".nature-close", "Cerrar galería de cumpleaños"]
   ];

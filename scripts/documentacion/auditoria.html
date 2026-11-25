@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Auditoría de seguridad y calidad — Jeniffer Photography</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm; @bottom-center { content: "Página " counter(page) " de " counter(pages); font: 8pt Arial; color: #888; } }
+:root { color-scheme: light; --violeta: #866BAF; --oscuro: #3b2a5c; --tinta: #1d1d24; }
+* { box-sizing: border-box; }
+html, body { background: #fff; }
+body { font: 10.4pt/1.6 "Segoe UI", Arial, sans-serif; color: var(--tinta); margin: 0; }
+h1 { font-size: 30pt; line-height: 1.1; color: var(--oscuro); margin: 0 0 10px; }
+h2 { font-size: 18pt; color: var(--oscuro); border-bottom: 3px solid var(--violeta); padding-bottom: 5px; margin: 0 0 12px; break-after: avoid; }
+h3 { font-size: 13pt; color: var(--oscuro); margin: 20px 0 6px; break-after: avoid; }
+h4 { font-size: 10.8pt; margin: 12px 0 4px; color: #4b3480; break-after: avoid; }
+p { margin: 0 0 8px; text-align: justify; } ul, ol { margin: 4px 0 10px 18px; padding: 0; } li { margin: 3px 0; }
+code { font: 8.8pt Consolas, monospace; background: #f1ecf8; padding: 1px 4px; border-radius: 3px; }
+pre { font: 8.4pt/1.45 Consolas, monospace; background: #1f2029; color: #e8e4f0; padding: 9px 12px; border-radius: 6px; white-space: pre-wrap; break-inside: avoid; margin: 6px 0 12px; }
+pre .c { color: #9a93ab; } pre .k { color: #c2a9e8; } pre .s { color: #9fe3b5; } pre .r { color: #ffb4c4; }
+.parte { break-before: page; }
+.portada { height: 255mm; display: flex; flex-direction: column; justify-content: center; padding: 0 14mm; break-after: page; background: linear-gradient(160deg, #f3eefb 0%, #fff 65%); border-left: 10px solid var(--violeta); }
+.portada .sub { font-size: 15pt; color: #555; margin-bottom: 26px; } .portada .meta { font-size: 10pt; color: #555; line-height: 1.9; }
+.caja { border-radius: 8px; padding: 9px 12px; margin: 9px 0 12px; break-inside: avoid; }
+.idea { background: #f5f2fa; border-left: 4px solid var(--violeta); } .ojo { background: #fff6e6; border-left: 4px solid #e0a526; }
+.peligro { background: #fdecef; border-left: 4px solid #d9506d; } .bien { background: #ebf8ef; border-left: 4px solid #2fa65a; }
+.caja b.t { display: block; margin-bottom: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 9.2pt; }
+tr { break-inside: avoid; } th { background: #ece6f6; text-align: left; padding: 5px 7px; } td { border-bottom: 1px solid #e6e1ee; padding: 5px 7px; vertical-align: top; }
+.e { white-space: nowrap; font-weight: 700; }
+.ok { color: #1d6b3a; } .fix { color: #7a3fb0; } .doc { color: #8a5a00; } .na { color: #666; }
+svg { max-width: 100%; height: auto; } svg text { font-family: "Segoe UI", Arial, sans-serif; }
+.ficha { border: 1px solid #e3dcef; border-radius: 10px; padding: 10px 14px 6px; margin: 12px 0 16px; break-inside: avoid-page; }
+.ficha h3 { margin-top: 2px; } .ficha .tags { font-size: 8.6pt; color: #666; margin: -2px 0 8px; }
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ant { background: #fdecef; border-radius: 8px; padding: 8px 10px; } .des { background: #ebf8ef; border-radius: 8px; padding: 8px 10px; }
+.ant b, .des b { display: block; margin-bottom: 3px; }
+.leyenda span { display: inline-block; margin-right: 14px; font-size: 9pt; }
+</style>
+</head>
+<body>
+
+<div class="portada">
+  <h1>Auditoría de seguridad<br>y calidad del sitio</h1>
+  <div class="sub">Jeniffer Photography — qué se revisó, qué se encontró y cómo se corrigió</div>
+  <div class="meta">
+    Versión auditada: 2.1.0 → versión corregida: 2.2.0 · Noviembre de 2026<br>
+    34 puntos de las listas de errores comunes que compartiste (seguridad, red, arquitectura,<br>
+    base de datos, frontend, SEO, despliegue y mantenimiento)<br><br>
+    Resultado: <b>6 correcciones de seguridad y red, 3 de robustez, 4 de accesibilidad,<br>
+    entornos fijados y 19 pruebas automáticas nuevas (50 en total, todas en verde)</b>
+  </div>
+</div>
+
+<section>
+<h2>1. Resumen en una página</h2>
+<p>Se revisaron <b>todos</b> los puntos de las imágenes, uno por uno, contra el código real y contra el sitio funcionando. Cada punto quedó en uno de estos cuatro estados:</p>
+<p class="leyenda"><span class="ok">✅ <b>Ya estaba bien</b></span><span class="fix">🔧 <b>Corregido ahora</b></span><span class="doc">📋 <b>Depende del hosting</b> (configuración lista y explicada)</span><span class="na">➖ <b>No aplica</b> (y por qué)</span></p>
+<svg viewBox="0 0 720 120" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="10" width="720" height="44" rx="8" fill="#f3eefb"/>
+  <rect x="0" y="10" width="275" height="44" rx="8" fill="#2fa65a"/><text x="137" y="38" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">✅ 13 ya estaban bien</text>
+  <rect x="275" y="10" width="212" height="44" fill="#7a3fb0"/><text x="381" y="38" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">🔧 10 corregidos</text>
+  <rect x="487" y="10" width="106" height="44" fill="#e0a526"/><text x="540" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">📋 5 hosting</text>
+  <rect x="593" y="10" width="127" height="44" rx="8" fill="#9a93ab"/><text x="656" y="38" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">➖ 6 no aplican</text>
+  <text x="360" y="85" text-anchor="middle" font-size="12" fill="#444">34 puntos revisados en total · 0 problemas de seguridad conocidos pendientes en el código</text>
+  <text x="360" y="105" text-anchor="middle" font-size="11" fill="#777">Los 5 de hosting son tareas del servidor (firewall, SSH, respaldos…), con archivos de configuración listos en deploy/.</text>
+</svg>
+
+<h3>Lo más importante que se encontró</h3>
+<table>
+  <tr><th>Hallazgo</th><th>Riesgo real</th><th>Estado</th></tr>
+  <tr><td>El servidor escuchaba en todas las direcciones de red</td><td>En un VPS, el puerto 3000 quedaría abierto a internet, saltándose el proxy, el HTTPS y el firewall.</td><td class="e fix">🔧 Corregido</td></tr>
+  <tr><td>No había límite de peticiones</td><td>Un bot podía hacer miles de peticiones y saturar el servidor. Se comprobó: 400 seguidas, todas aceptadas.</td><td class="e fix">🔧 Corregido</td></tr>
+  <tr><td>No redirigía HTTP → HTTPS</td><td>Quien escribiera <code>http://</code> navegaría sin cifrado; Google penaliza las páginas sin HTTPS.</td><td class="e fix">🔧 Corregido</td></tr>
+  <tr><td>Sin WebGL, se detenía la mitad del JavaScript</td><td>En celulares sin 3D se perdían la navegación con teclado y las fotos de «Momentos que se abren» (comprobado en la versión publicada).</td><td class="e fix">🔧 Corregido</td></tr>
+  <tr><td>13 textos con contraste insuficiente</td><td>Difíciles de leer con baja visión o al sol; incumplían la norma WCAG AA.</td><td class="e fix">🔧 Corregido</td></tr>
+</table>
+<div class="caja bien"><b class="t">✅ Verificado con herramientas reales</b>
+Revisión del código línea por línea · pruebas del servidor con peticiones reales (Supertest) · <b>axe-core</b>, el motor de accesibilidad que usa Google Lighthouse (0 problemas al final) · el sitio abierto en Edge con el 3D desactivado · <code>npm audit</code> (0 vulnerabilidades) · 50 pruebas automáticas.</div>
+</section>
+
+<!-- ===================================================================== -->
+<section class="parte">
+<h2>2. Cómo se hizo la auditoría</h2>
+<svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3b2a5c"/></marker></defs>
+  <g font-size="11.5">
+    <rect x="5" y="20" width="160" height="70" rx="10" fill="#f3eefb" stroke="#866BAF" stroke-width="2"/><text x="85" y="50" text-anchor="middle" font-weight="700" fill="#3b2a5c">1. Revisar el código</text><text x="85" y="70" text-anchor="middle" fill="#555">patrones peligrosos</text>
+    <rect x="185" y="20" width="160" height="70" rx="10" fill="#f3eefb" stroke="#866BAF" stroke-width="2"/><text x="265" y="50" text-anchor="middle" font-weight="700" fill="#3b2a5c">2. Atacar el servidor</text><text x="265" y="70" text-anchor="middle" fill="#555">peticiones reales</text>
+    <rect x="365" y="20" width="160" height="70" rx="10" fill="#f3eefb" stroke="#866BAF" stroke-width="2"/><text x="445" y="50" text-anchor="middle" font-weight="700" fill="#3b2a5c">3. Accesibilidad</text><text x="445" y="70" text-anchor="middle" fill="#555">axe-core en la página</text>
+    <rect x="545" y="20" width="170" height="70" rx="10" fill="#f3eefb" stroke="#866BAF" stroke-width="2"/><text x="630" y="50" text-anchor="middle" font-weight="700" fill="#3b2a5c">4. Condiciones difíciles</text><text x="630" y="70" text-anchor="middle" fill="#555">navegador sin 3D</text>
+    <line x1="85" y1="92" x2="300" y2="140" stroke="#3b2a5c" stroke-width="1.5" marker-end="url(#f)"/><line x1="265" y1="92" x2="330" y2="138" stroke="#3b2a5c" stroke-width="1.5" marker-end="url(#f)"/>
+    <line x1="445" y1="92" x2="390" y2="138" stroke="#3b2a5c" stroke-width="1.5" marker-end="url(#f)"/><line x1="630" y1="92" x2="420" y2="140" stroke="#3b2a5c" stroke-width="1.5" marker-end="url(#f)"/>
+    <rect x="230" y="142" width="260" height="58" rx="10" fill="#ebf8ef" stroke="#2fa65a" stroke-width="2"/><text x="360" y="167" text-anchor="middle" font-weight="700" fill="#1d6b3a">Corregir + prueba automática</text><text x="360" y="187" text-anchor="middle" fill="#555">cada arreglo queda vigilado para siempre</text>
+  </g>
+</svg>
+<ol>
+  <li><b>Revisar el código</b> buscando lo que describen tus imágenes: consultas a bases de datos, <code>innerHTML</code>, <code>eval</code>, cookies, <code>localStorage</code>, contraseñas, manejo de errores y la forma en que se abre el puerto.</li>
+  <li><b>«Atacar» el servidor de forma controlada</b>: peticiones desde otro sitio (CORS), direcciones mal formadas, métodos no permitidos, intentos de salir de la carpeta pública (<code>../</code>), acceso a <code>.env</code>, HTTP sin cifrar y 400 peticiones seguidas desde la misma dirección. Se hizo con la aplicación en memoria, sin tocar internet ni tu computadora.</li>
+  <li><b>Accesibilidad</b> con axe-core, que revisa decenas de reglas (contraste, etiquetas, nombres de botones, regiones) en la página y con cada panel abierto.</li>
+  <li><b>Condiciones difíciles</b>: el sitio se abrió en Edge con el 3D desactivado, como en un celular antiguo, y se comparó con la versión publicada.</li>
+</ol>
+<div class="caja idea"><b class="t">💡 Regla de trabajo</b>Cada corrección vino con una <b>prueba automática</b>. Si algún día un cambio vuelve a abrir el problema, la prueba falla en GitHub antes de publicarse.</div>
+</section>
+
+<!-- ===================================================================== -->
+<section class="parte">
+<h2>3. Tabla completa de los 34 puntos</h2>
+<h3>Vulnerabilidades de seguridad</h3>
+<table>
+  <tr><th style="width:27%">Punto de las imágenes</th><th style="width:15%">Estado</th><th>Explicación</th></tr>
+  <tr><td>Inyección SQL / NoSQL</td><td class="e na">➖ No aplica</td><td>No hay base de datos. Si algún día se agrega, usar consultas parametrizadas (sección 6).</td></tr>
+  <tr><td>Cross-Site Scripting (XSS)</td><td class="e fix">🔧 Reforzado</td><td>Ya había CSP estricta (<code>script-src 'self'</code>). Ahora además los textos de los sliders se crean con <code>textContent</code> en vez de <code>innerHTML</code> (ficha 4.7).</td></tr>
+  <tr><td>CSRF</td><td class="e na">➖ No aplica</td><td>No hay sesiones, cookies ni acciones que cambien datos; además <code>form-action 'none'</code> impide enviar formularios.</td></tr>
+  <tr><td>Credenciales y secretos</td><td class="e ok">✅ Bien</td><td>Ninguna contraseña en el código ni en el historial; <code>.env</code> y llaves en <code>.gitignore</code>; GitHub bloquea subidas con secretos.</td></tr>
+  <tr><td>Autenticación, contraseñas, JWT en localStorage</td><td class="e na">➖ No aplica</td><td>No hay inicio de sesión. El sitio no usa cookies ni <code>localStorage</code> (revisado).</td></tr>
+  <tr><td>Control de acceso (IDOR)</td><td class="e ok">✅ Bien</td><td>No hay datos privados por usuario. El servidor rechaza <code>.env</code>, <code>../</code>, <code>/server/</code> y listados de carpetas (probado).</td></tr>
+</table>
+<h3>Choques con otros sitios y conflictos de red</h3>
+<table>
+  <tr><th style="width:27%">Punto</th><th style="width:15%">Estado</th><th>Explicación</th></tr>
+  <tr><td>Conflictos de puertos y dominios</td><td class="e fix">🔧 Corregido</td><td>Escucha en <code>127.0.0.1</code>, un <code>PORT</code> por sitio y configuraciones de Nginx y Caddy listas (ficha 4.1). Si el puerto está ocupado, el log lo explica.</td></tr>
+  <tr><td>Contaminación de entornos</td><td class="e fix">🔧 Corregido</td><td>Node fijado en <code>.nvmrc</code>; <code>engine-strict</code> impide instalar con otra versión; dependencias exactas; Docker opcional (ficha 4.10).</td></tr>
+  <tr><td>CORS abierto (<code>*</code>)</td><td class="e ok">✅ Bien</td><td>No se envía <code>Access-Control-Allow-Origin</code>: ningún otro sitio puede usar tu servidor desde el navegador de un visitante (probado).</td></tr>
+  <tr><td>Colisión de cookies y localStorage</td><td class="e na">➖ No aplica</td><td>No se usan cookies ni almacenamiento local.</td></tr>
+</table>
+<h3>Arquitectura y backend</h3>
+<table>
+  <tr><th style="width:27%">Punto</th><th style="width:15%">Estado</th><th>Explicación</th></tr>
+  <tr><td>Validar solo en el frontend</td><td class="e ok">✅ Bien</td><td>El servidor no recibe datos de visitantes: no hay nada que validar. Su única ruta de API solo responde «ok».</td></tr>
+  <tr><td>Sin límite de peticiones</td><td class="e fix">🔧 Corregido</td><td>Límite por IP con respuesta 429 (ficha 4.3). Cloudflare delante como capa extra (📋).</td></tr>
+  <tr><td>Subida de archivos sin filtro</td><td class="e na">➖ No aplica</td><td>No se suben archivos: la selfie nunca sale del navegador del visitante.</td></tr>
+  <tr><td>Errores detallados en producción</td><td class="e ok">✅ Bien</td><td>Mensajes genéricos; la pila solo va al log (probado con una URL mal formada). Ahora también se registran todas las respuestas 5xx (ficha 4.5).</td></tr>
+  <tr><td>Sobreingeniería</td><td class="e ok">✅ Bien</td><td>Sin microservicios ni frameworks pesados: un servidor Express pequeño y 3 dependencias.</td></tr>
+  <tr><td>Acoplamiento fuerte</td><td class="e ok">✅ Bien</td><td>Configuración, seguridad, límite, rutas y registro en módulos separados que se prueban por separado.</td></tr>
+</table>
+<h3>Lista previa a producción</h3>
+<table>
+  <tr><th style="width:27%">Punto</th><th style="width:15%">Estado</th><th>Explicación</th></tr>
+  <tr><td>HTTPS activo y redirección forzada</td><td class="e fix">🔧 Corregido</td><td>Redirección 301 de HTTP a HTTPS y HSTS (ficha 4.2). El certificado lo instala el hosting (📋).</td></tr>
+  <tr><td>Dependencias actualizadas (npm audit)</td><td class="e ok">✅ Bien</td><td>0 vulnerabilidades; <code>npm audit</code> en cada cambio y Dependabot semanal.</td></tr>
+  <tr><td>Firewall configurado</td><td class="e doc">📋 Hosting</td><td>Script listo en <code>deploy/firewall-ufw.sh</code>: solo SSH, 80 y 443 (ficha 4.11).</td></tr>
+  <tr><td>SSH en otro puerto y con llaves</td><td class="e doc">📋 Hosting</td><td>Pasos explicados en la ficha 4.11.</td></tr>
+  <tr><td>Copias de seguridad</td><td class="e doc">📋 Hosting</td><td>No hay base de datos; el código está en GitHub. Activar los respaldos del hosting y guardar las fotos originales en la nube.</td></tr>
+  <tr><td>Mínimo privilegio</td><td class="e fix">🔧 Reforzado</td><td>Docker corre como usuario sin privilegios; ahora el servidor avisa si alguien lo ejecuta como administrador (root).</td></tr>
+  <tr><td>Cabeceras de seguridad (Helmet)</td><td class="e ok">✅ Bien</td><td>CSP, X-Frame-Options, nosniff, sin X-Powered-By, Referrer-Policy y Permissions-Policy.</td></tr>
+</table>
+<h3>Base de datos, rendimiento, frontend, SEO y mantenimiento</h3>
+<table>
+  <tr><th style="width:27%">Punto</th><th style="width:15%">Estado</th><th>Explicación</th></tr>
+  <tr><td>Planificación de datos, N+1, índices, paginación</td><td class="e na">➖ No aplica</td><td>No hay base de datos ni listados que paginar.</td></tr>
+  <tr><td>Imágenes sin optimizar</td><td class="e ok">✅ Bien</td><td>WebP, miniaturas de 480 px, carga diferida y versiones para celular.</td></tr>
+  <tr><td>Diseño responsivo</td><td class="e ok">✅ Bien</td><td>Probado a 375 px sin desplazamiento horizontal.</td></tr>
+  <tr><td>Accesibilidad (contraste, semántica, teclado)</td><td class="e fix">🔧 Corregido</td><td>4 tipos de problemas detectados con axe-core y corregidos; 0 al final (ficha 4.9).</td></tr>
+  <tr><td>SEO al final / sin SSR</td><td class="e ok">✅ Bien</td><td>El HTML llega completo desde el servidor (no se arma con JavaScript): meta, <code>alt</code>, sitemap y datos estructurados.</td></tr>
+  <tr><td>Estados de interfaz (cargando, error)</td><td class="e fix">🔧 Corregido</td><td>Indicador de carga y mensajes de error en las galerías (ficha 4.8).</td></tr>
+  <tr><td>Desplegar sin pruebas ni entornos separados</td><td class="e ok">✅ Bien</td><td>50 pruebas, CI en GitHub y flujo rama → PR → main.</td></tr>
+  <tr><td>Manejo de errores y logs</td><td class="e fix">🔧 Reforzado</td><td>Registro de 5xx, puerto ocupado y ejecución como root (ficha 4.5).</td></tr>
+  <tr><td>Robustez ante fallos del navegador</td><td class="e fix">🔧 Corregido</td><td>Sin WebGL, el resto del sitio sigue funcionando (ficha 4.6).</td></tr>
+  <tr><td>Monitoreo centralizado</td><td class="e doc">📋 Hosting</td><td>UptimeRobot sobre <code>/api/salud</code> (guía de buenas prácticas, 5.2).</td></tr>
+  <tr><td>CDN / WAF (Cloudflare)</td><td class="e doc">📋 Hosting</td><td>Recomendado al publicar: protege contra ataques grandes antes de que lleguen a tu servidor.</td></tr>
+</table>
+</section>
+
+<!-- ===================================================================== -->
+<section class="parte">
+<h2>4. Las correcciones, una por una</h2>
+
+<div class="ficha">
+<h3>4.1 El puerto ya no queda expuesto a internet</h3>
+<div class="tags">Imagen: «Conflictos de puertos y dominios» · Archivos: server/config.js, server/index.js, deploy/</div>
+<div class="dos">
+  <div class="ant"><b>Antes</b><code>app.listen(3000)</code> escuchaba en <b>todas</b> las direcciones de red. En un VPS, cualquiera podía entrar por <code>http://IP-del-servidor:3000</code>, saltándose el HTTPS y el firewall.</div>
+  <div class="des"><b>Ahora</b>Escucha en <code>127.0.0.1</code>, una dirección a la que solo se llega <b>desde el mismo servidor</b>. El único camino de entrada es el proxy (Nginx o Caddy), que atiende HTTPS.</div>
+</div>
+<svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3b2a5c"/></marker></defs>
+  <rect x="5" y="80" width="120" height="60" rx="10" fill="#f3eefb" stroke="#866BAF" stroke-width="2"/><text x="65" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#3b2a5c">🌍 Internet</text><text x="65" y="126" text-anchor="middle" font-size="10" fill="#555">visitantes</text>
+  <rect x="190" y="10" width="525" height="200" rx="14" fill="#fafafa" stroke="#bbb" stroke-dasharray="5 4"/><text x="452" y="30" text-anchor="middle" font-size="11" fill="#777">Tu servidor (VPS) · firewall: solo 22, 80 y 443 abiertos</text>
+  <rect x="210" y="70" width="160" height="80" rx="10" fill="#fff6e6" stroke="#e0a526" stroke-width="2"/><text x="290" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#7a5300">Nginx / Caddy</text><text x="290" y="118" text-anchor="middle" font-size="10" fill="#555">puertos 80 y 443</text><text x="290" y="134" text-anchor="middle" font-size="10" fill="#555">HTTPS + reparte por dominio</text>
+  <rect x="455" y="45" width="240" height="55" rx="10" fill="#ebf8ef" stroke="#2fa65a" stroke-width="2"/><text x="575" y="70" text-anchor="middle" font-size="12" font-weight="700" fill="#1d6b3a">jenifferphotography.com</text><text x="575" y="88" text-anchor="middle" font-size="10" fill="#555">Node en 127.0.0.1:3000</text>
+  <rect x="455" y="125" width="240" height="55" rx="10" fill="#eef4fb" stroke="#4a7fc0" stroke-width="2"/><text x="575" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#24538a">otrositio.com</text><text x="575" y="168" text-anchor="middle" font-size="10" fill="#555">Node en 127.0.0.1:3001</text>
+  <line x1="125" y1="110" x2="207" y2="110" stroke="#3b2a5c" stroke-width="2" marker-end="url(#g)"/>
+  <line x1="370" y1="95" x2="452" y2="75" stroke="#2fa65a" stroke-width="2" marker-end="url(#g)"/>
+  <line x1="370" y1="125" x2="452" y2="150" stroke="#4a7fc0" stroke-width="2" marker-end="url(#g)"/>
+  <path d="M125,135 C200,200 420,205 450,95" stroke="#d9506d" stroke-width="2" stroke-dasharray="6 4" fill="none"/><text x="250" y="200" font-size="11" fill="#a3203d" font-weight="700">✖ entrada directa al 3000: imposible</text>
+</svg>
+<p>Así se resuelve el «choque» de tus imágenes: cada sitio tiene su propio puerto local y el proxy los reparte según el dominio. Las configuraciones están listas en <code>deploy/nginx.conf</code> y <code>deploy/Caddyfile</code>. Docker, que necesita escuchar dentro del contenedor, usa <code>HOST=0.0.0.0</code> automáticamente.</p>
+<pre><span class="c">// server/config.js</span>
+host: env.HOST || <span class="s">'127.0.0.1'</span>,
+<span class="c">// server/index.js — si otro programa ya usa el puerto, se explica en el log:</span>
+<span class="k">if</span> (error.code === <span class="s">'EADDRINUSE'</span>) registro.error(<span class="s">'puerto-ocupado'</span>, { puerto, detalle: <span class="s">'Asigna otro con PORT…'</span> });</pre>
+<p><b>Prueba:</b> «por defecto escucha solo en 127.0.0.1» y «permite cambiar el puerto y la dirección para varios sitios o para Docker».</p>
+</div>
+
+<div class="ficha">
+<h3>4.2 HTTPS obligatorio</h3>
+<div class="tags">Imagen: «HTTPS activo y redirección forzada» · Archivos: server/config.js, server/app.js</div>
+<div class="dos">
+  <div class="ant"><b>Antes</b>Quien entraba por <code>http://</code> navegaba sin cifrar (respuesta 200).</div>
+  <div class="des"><b>Ahora</b>Respuesta <b>301</b> a la misma dirección con <code>https://</code>. El navegador recuerda el cambio y Google traspasa todo el posicionamiento.</div>
+</div>
+<svg viewBox="0 0 720 90" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3b2a5c"/></marker></defs>
+  <rect x="5" y="20" width="200" height="44" rx="8" fill="#fdecef" stroke="#d9506d"/><text x="105" y="47" text-anchor="middle" font-size="12">http://tudominio.com/galeria</text>
+  <line x1="205" y1="42" x2="290" y2="42" stroke="#3b2a5c" stroke-width="2" marker-end="url(#h)"/><text x="248" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#3b2a5c">301</text>
+  <rect x="295" y="20" width="220" height="44" rx="8" fill="#ebf8ef" stroke="#2fa65a"/><text x="405" y="47" text-anchor="middle" font-size="12">🔒 https://tudominio.com/galeria</text>
+  <text x="530" y="38" font-size="10.5" fill="#555">+ HSTS: el navegador ya no</text><text x="530" y="54" font-size="10.5" fill="#555">vuelve a intentar http</text>
+</svg>
+<p>Tres detalles cuidados: (1) solo se activa en producción detrás de un proxy, porque Node no atiende HTTPS por sí mismo; (2) <code>/api/salud</code> queda excluida para que los chequeos internos del hosting no fallen; (3) si <code>SITE_URL</code> está definido con https, el destino sale de ahí y no de la cabecera <code>Host</code>, que un atacante podría falsificar.</p>
+<p><b>Pruebas:</b> 5 (redirección, destino seguro, HTTPS sin cambios, excepción de salud, y cuándo se activa).</p>
+</div>
+
+<div class="ficha">
+<h3>4.3 Límite de peticiones (rate limiting)</h3>
+<div class="tags">Imagen: «Sin límite de peticiones» · Archivo nuevo: server/middleware/limite.js (sin librerías externas)</div>
+<div class="dos">
+  <div class="ant"><b>Antes</b>Prueba real: <b>400 peticiones seguidas</b> desde la misma dirección, <b>400 aceptadas</b>. Un bot podía saturar el servidor.</div>
+  <div class="des"><b>Ahora</b>Cada dirección IP puede hacer hasta <b>300 peticiones por minuto</b>. A partir de la 301 recibe <b>429</b> «Demasiadas peticiones» y la cabecera <code>Retry-After</code> con los segundos que debe esperar.</div>
+</div>
+<svg viewBox="0 0 720 170" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="18" font-size="12" font-weight="700" fill="#3b2a5c">Peticiones de una misma IP en una ventana de 60 segundos</text>
+  <line x1="40" y1="140" x2="700" y2="140" stroke="#999"/><line x1="40" y1="30" x2="40" y2="140" stroke="#999"/>
+  <line x1="40" y1="62" x2="700" y2="62" stroke="#d9506d" stroke-width="2" stroke-dasharray="6 4"/><text x="695" y="56" text-anchor="end" font-size="11" fill="#a3203d" font-weight="700">límite: 300</text>
+  <rect x="70" y="112" width="60" height="28" fill="#2fa65a"/><text x="100" y="158" text-anchor="middle" font-size="10">persona</text><text x="100" y="106" text-anchor="middle" font-size="10" fill="#1d6b3a">~60 ✔</text>
+  <rect x="170" y="98" width="60" height="42" fill="#2fa65a"/><text x="200" y="158" text-anchor="middle" font-size="10">persona activa</text><text x="200" y="92" text-anchor="middle" font-size="10" fill="#1d6b3a">~110 ✔</text>
+  <rect x="300" y="62" width="60" height="78" fill="#2fa65a"/><rect x="300" y="32" width="60" height="30" fill="#d9506d"/><text x="330" y="158" text-anchor="middle" font-size="10">bot</text><text x="420" y="45" font-size="10.5" fill="#a3203d">desde la 301 → 429 «espera N segundos»</text>
+</svg>
+<p>Una visita normal hace entre 30 y 110 peticiones (página, fotos, scripts), así que el límite <b>nunca afecta a una persona</b>. Se puede ajustar con <code>RATE_LIMIT_MAX</code> y <code>RATE_LIMIT_WINDOW_SEC</code>.</p>
+<div class="caja ojo"><b class="t">⚠️ La trampa del proxy, ya resuelta</b>Detrás de Nginx o del panel del hosting, si falta <code>TRUST_PROXY=true</code>, el servidor vería <b>todas</b> las visitas como si vinieran de 127.0.0.1 y el límite bloquearía a todos tus clientes juntos. El limitador detecta ese caso: no bloquea a nadie y deja un aviso en el log para corregir la configuración.</div>
+<p>Se escribió sin librería externa (unas 60 líneas), siguiendo el consejo de la imagen de deuda técnica, y con limpieza automática de memoria. <b>Pruebas:</b> 4 (429 y Retry-After, IPs separadas, reinicio de la ventana y la trampa del proxy).</p>
+<p>Para ataques grandes (cientos de miles de peticiones) la defensa correcta está <b>antes</b> de tu servidor: <b>Cloudflare</b> gratuito como CDN y WAF (📋 al publicar).</p>
+</div>
+
+<div class="ficha">
+<h3>4.4 CORS: ningún otro sitio puede usar tu servidor</h3>
+<div class="tags">Imagen: «Errores de CORS» · Estado: ya estaba bien, ahora vigilado por una prueba</div>
+<p>CORS es la regla del navegador que decide si una página de <b>otro</b> dominio puede leer respuestas de tu servidor. El error de la imagen es responder <code>Access-Control-Allow-Origin: *</code> («cualquiera puede»). Se probó con una petición desde «https://sitio-malo.com»: tu servidor <b>no envía</b> esa cabecera, así que el navegador bloquea la lectura. Como el sitio no usa cookies ni sesiones, tampoco hay credenciales que robar.</p>
+</div>
+
+<div class="ficha">
+<h3>4.5 Registro de errores, puerto ocupado y mínimo privilegio</h3>
+<div class="tags">Imágenes: «Ignorar el manejo de errores y logs», «Principio de mínimo privilegio» · Archivos: server/app.js, server/index.js</div>
+<ul>
+  <li><b>Toda respuesta 5xx</b> (error del servidor) queda en el log con método, ruta, código y duración. Antes solo se registraban los errores que pasaban por el manejador central.</li>
+  <li><b>Puerto ocupado:</b> en lugar de un error técnico, el log dice «puerto-ocupado: otra aplicación usa este puerto; asigna otro con PORT».</li>
+  <li><b>Ejecución como administrador (root):</b> el servidor avisa en el log. Un servidor web ejecutado como root le daría a un atacante el control total de la máquina si lograra explotar algún fallo.</li>
+</ul>
+<pre>{<span class="s">"hora"</span>:<span class="s">"2026-11-24T21:10:03Z"</span>,<span class="s">"nivel"</span>:<span class="s">"error"</span>,<span class="s">"mensaje"</span>:<span class="s">"respuesta-con-error"</span>,<span class="s">"metodo"</span>:<span class="s">"GET"</span>,<span class="s">"ruta"</span>:<span class="s">"/mal"</span>,<span class="s">"estado"</span>:503,<span class="s">"ms"</span>:2}</pre>
+<p>Al visitante, en cambio, nunca se le muestran rutas, versiones ni la «pila» del error: se comprobó que una dirección mal formada no revela nada interno.</p>
+</div>
+
+<div class="ficha">
+<h3>4.6 El sitio sigue funcionando sin 3D (WebGL)</h3>
+<div class="tags">Imagen: «Falta de estados de interfaz» y robustez · Archivo: public/js/main.js</div>
+<p>Las galerías espiral y parallax y el fondo de cámaras usan <b>WebGL</b>, la tecnología 3D del navegador. Algunos celulares antiguos, navegadores con la aceleración desactivada o en modo de ahorro no la tienen. Se abrió el sitio en Edge con WebGL desactivado:</p>
+<table>
+  <tr><th>Qué se comprobó</th><th>Versión publicada (2.1.0)</th><th>Versión corregida (2.2.0)</th></tr>
+  <tr><td>Galería parallax</td><td>«Cargando imágenes…» para siempre</td><td>«Tu navegador no puede mostrar esta galería en 3D.»</td></tr>
+  <tr><td>Navegación con teclado (paneles, Escape)</td><td class="e" style="color:#a3203d">✖ No funcionaba</td><td class="e ok">✔ Funciona</td></tr>
+  <tr><td>Fotos de «Momentos que se abren»</td><td class="e" style="color:#a3203d">✖ Vacías</td><td class="e ok">✔ Se ven</td></tr>
+  <tr><td>Sliders de bodas, quinceaños y cumpleaños</td><td>✔</td><td>✔</td></tr>
+</table>
+<p><b>Por qué pasaba:</b> todo el JavaScript visual vive en un solo archivo. Cuando la galería parallax intentaba crear su motor 3D y fallaba, el error detenía la lectura del archivo y <b>todo lo que venía después nunca se ejecutaba</b>.</p>
+<pre><span class="c">// Una sola comprobación al inicio, reutilizada por las tres partes 3D:</span>
+window.JF_webglDisponible = (<span class="k">function</span> () {
+  <span class="k">try</span> { <span class="k">const</span> c = document.createElement(<span class="s">"canvas"</span>);
+        <span class="k">return</span> !!(c.getContext(<span class="s">"webgl2"</span>) || c.getContext(<span class="s">"webgl"</span>)); }
+  <span class="k">catch</span> (error) { <span class="k">return false</span>; }
+})();
+<span class="c">// En la galería parallax:</span>
+<span class="k">if</span> (!window.JF_webglDisponible) { loadingEl.textContent = <span class="s">"Tu navegador no puede mostrar…"</span>; <span class="k">return</span>; }</pre>
+</div>
+
+<div class="ficha">
+<h3>4.7 XSS: textos de los sliders sin innerHTML</h3>
+<div class="tags">Imagen: «Cross-Site Scripting» («sanitiza y escapa todo texto») · Archivo: public/js/main.js</div>
+<div class="dos">
+  <div class="ant"><b>Antes</b><code>text.innerHTML = `&lt;h3&gt;${s.title}&lt;/h3&gt;…`</code><br>Hoy los títulos son fijos, pero si algún día vinieran de un panel o de una base de datos, un título como <code>&lt;img src=x onerror=…&gt;</code> se ejecutaría.</div>
+  <div class="des"><b>Ahora</b><code>titulo.textContent = s.title;</code><br><code>textContent</code> trata todo como texto: el navegador nunca lo interpreta como HTML ni como código, venga de donde venga.</div>
+</div>
+<p>Es una corrección «a largo plazo», como pediste: hoy no había un ataque posible, pero se cierra la puerta antes de que exista. Una prueba impide volver a escribir textos con <code>innerHTML</code> y plantillas.</p>
+</div>
+
+<div class="ficha">
+<h3>4.8 Estados de carga y de error</h3>
+<div class="tags">Imagen: «Falta de estados de interfaz» · Archivos: public/js/main.js, public/css/styles.css</div>
+<ul>
+  <li><b>Al abrir una galería</b> aparece un círculo girando hasta que llega la primera foto. Si la foto no puede cargarse (por ejemplo, sin conexión), se muestra «No se pudo cargar la galería. Revisa tu conexión e inténtalo de nuevo.» en lugar de un fondo vacío.</li>
+  <li><b>La galería en espiral</b> muestra «Cargando galería…» mientras prepara las 26 fotos.</li>
+  <li>Quien tiene activada la opción «reducir movimiento» en su celular ve el indicador sin animación.</li>
+</ul>
+<svg viewBox="0 0 720 110" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="220" height="90" rx="8" fill="#1f2029"/><circle cx="120" cy="55" r="18" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="5"/><path d="M120,37 A18,18 0 0 1 138,55" fill="none" stroke="#fff" stroke-width="5"/><text x="120" y="96" text-anchor="middle" font-size="10" fill="#bbb">cargando</text>
+  <rect x="250" y="10" width="220" height="90" rx="8" fill="#1f2029"/><rect x="270" y="38" width="180" height="34" rx="6" fill="rgba(15,16,22,.85)" stroke="#555"/><text x="360" y="59" text-anchor="middle" font-size="10" fill="#fff">No se pudo cargar la galería…</text><text x="360" y="96" text-anchor="middle" font-size="10" fill="#bbb">error</text>
+  <rect x="490" y="10" width="220" height="90" rx="8" fill="#5b7a4a"/><text x="600" y="60" text-anchor="middle" font-size="12" fill="#fff">📷 foto</text><text x="600" y="96" text-anchor="middle" font-size="10" fill="#eee">listo</text>
+</svg>
+</div>
+
+<div class="ficha">
+<h3>4.9 Accesibilidad: de 4 problemas a 0</h3>
+<div class="tags">Imagen: «Despreciar el diseño responsivo y la accesibilidad» · Herramienta: axe-core · Archivos: styles.css, index.html, main.js, sitio.js</div>
+<h4>a) Contraste de color (norma WCAG AA: mínimo 4,5 : 1 para texto pequeño)</h4>
+<svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="16" font-size="11" font-weight="700" fill="#555">ANTES</text><text x="370" y="16" font-size="11" font-weight="700" fill="#555">AHORA</text>
+  <g font-size="12">
+    <rect x="10" y="24" width="340" height="40" rx="6" fill="#1f2029"/><text x="22" y="49" fill="#866baf" font-weight="700" letter-spacing="2">FOTOGRAFÍA CON ALMA</text><text x="340" y="49" text-anchor="end" fill="#ff8fa8" font-weight="700">3,65 ✖</text>
+    <rect x="370" y="24" width="340" height="40" rx="6" fill="#1f2029"/><text x="382" y="49" fill="#9b84c4" font-weight="700" letter-spacing="2">FOTOGRAFÍA CON ALMA</text><text x="700" y="49" text-anchor="end" fill="#9fe3b5" font-weight="700">5,01 ✔</text>
+    <rect x="10" y="74" width="340" height="40" rx="6" fill="#0d0d14"/><text x="22" y="99" fill="#866baf" font-weight="700">SOBRE MÍ · CONTACTO · BODA</text><text x="340" y="99" text-anchor="end" fill="#ff8fa8" font-weight="700">4,37 ✖</text>
+    <rect x="370" y="74" width="340" height="40" rx="6" fill="#0d0d14"/><text x="382" y="99" fill="#9179bb" font-weight="700">SOBRE MÍ · CONTACTO · BODA</text><text x="700" y="99" text-anchor="end" fill="#9fe3b5" font-weight="700">5,21 ✔</text>
+    <rect x="10" y="124" width="340" height="40" rx="6" fill="#0d0d14"/><text x="22" y="149" fill="#706e69">© 2026 Jeniffer Valle. Todos los derechos…</text><text x="340" y="149" text-anchor="end" fill="#ff8fa8" font-weight="700">3,80 ✖</text>
+    <rect x="370" y="124" width="340" height="40" rx="6" fill="#0d0d14"/><text x="382" y="149" fill="#8a8883">© 2026 Jeniffer Valle. Todos los derechos…</text><text x="700" y="149" text-anchor="end" fill="#9fe3b5" font-weight="700">5,47 ✔</text>
+    <rect x="10" y="174" width="340" height="44" rx="6" fill="#f3eefb"/><rect x="22" y="181" width="200" height="30" rx="15" fill="#866baf"/><text x="122" y="201" text-anchor="middle" fill="#fff" font-weight="700">Tómate una foto</text><text x="340" y="201" text-anchor="end" fill="#a3203d" font-weight="700">4,43 ✖</text>
+    <rect x="370" y="174" width="340" height="44" rx="6" fill="#f3eefb"/><rect x="382" y="181" width="200" height="30" rx="15" fill="#7b60a6"/><text x="482" y="201" text-anchor="middle" fill="#fff" font-weight="700">Tómate una foto</text><text x="700" y="201" text-anchor="end" fill="#1d6b3a" font-weight="700">5,16 ✔</text>
+  </g>
+  <text x="360" y="240" text-anchor="middle" font-size="10.5" fill="#666">Los nuevos tonos son casi iguales a la vista: el diseño se conserva y ahora todos pueden leerlo.</text>
+</svg>
+<h4>b) El nombre que oye un lector de pantalla debe incluir lo que se ve</h4>
+<p>El menú de la portada decía «boda», pero los lectores de pantalla anunciaban «Ver galería de bodas»; y el botón de precios mostraba «Pídelos por WhatsApp» pero se anunciaba con otra frase. Quien usa <b>control por voz</b> dice lo que ve («pulsa boda») y el celular no encontraba el botón. Ahora los nombres empiezan con el texto visible: «Boda: ver galería».</p>
+<h4>c) Regiones de la página</h4>
+<p>La portada no estaba dentro de ninguna región. Ahora va dentro de <code>&lt;header&gt;</code>, y el fondo 3D decorativo se oculta a los lectores de pantalla con <code>aria-hidden</code>, porque no aporta información.</p>
+<div class="caja bien"><b class="t">✅ Resultado de axe-core</b>Página principal: <b>0 problemas, 44 reglas superadas</b>. También 0 problemas con los paneles «Sobre mí», «Contacto» y una galería abierta. Una prueba automática recalcula el contraste de los colores en cada cambio.</div>
+</div>
+
+<div class="ficha">
+<h3>4.10 Entornos aislados: nada de «en mi computadora sí funciona»</h3>
+<div class="tags">Imagen: «Contaminación de entornos y dependencias» · Archivos nuevos: .nvmrc, .node-version, .npmrc</div>
+<table>
+  <tr><th>Archivo</th><th>Qué evita</th></tr>
+  <tr><td><code>.nvmrc</code> / <code>.node-version</code></td><td>Fijan Node 22. Las herramientas de versiones (nvm, fnm y algunos paneles de hosting) lo leen y usan esa versión para este proyecto, sin afectar a otros sitios del mismo servidor.</td></tr>
+  <tr><td><code>.npmrc</code> → <code>engine-strict=true</code></td><td>npm se <b>niega</b> a instalar si la versión de Node no es la correcta, en lugar de instalar y fallar después en producción.</td></tr>
+  <tr><td><code>.npmrc</code> → <code>save-exact=true</code></td><td>Las dependencias nuevas se guardan con versión exacta: todos instalan exactamente lo mismo.</td></tr>
+  <tr><td><code>package-lock.json</code> + <code>npm ci</code></td><td>Cada proyecto instala sus librerías <b>en su propia carpeta</b>, nunca globales.</td></tr>
+  <tr><td><code>Dockerfile</code></td><td>Aislamiento total opcional: el sitio con su propio Node dentro de un contenedor.</td></tr>
+</table>
+</div>
+
+<div class="ficha">
+<h3>4.11 Servidor: proxy, firewall y SSH (configuraciones listas)</h3>
+<div class="tags">Imagen: «Firewall configurado» · Carpeta nueva: deploy/</div>
+<ul>
+  <li><b><code>deploy/nginx.conf</code></b>: HTTPS, HTTP → HTTPS, www → sin www, oculta la versión de Nginx, limita el tamaño de las peticiones y reenvía al puerto local.</li>
+  <li><b><code>deploy/Caddyfile</code></b>: lo mismo en 10 líneas, con certificado automático. Usa uno u otro.</li>
+  <li><b><code>deploy/firewall-ufw.sh</code></b>: bloquea todo lo que entra excepto SSH (con límite contra intentos repetidos), 80 y 443.</li>
+</ul>
+<div class="caja peligro"><b class="t">⛔ Antes de activar el firewall</b>Comprueba el puerto de SSH en el script. Si lo cambiaste (por ejemplo a 2222) y el script dice 22, te quedarás fuera del servidor.</div>
+<p><b>SSH con llaves en lugar de contraseña</b> (cuando tengas VPS): crea la llave en tu computadora con <code>ssh-keygen -t ed25519</code>, cópiala con <code>ssh-copy-id usuario@servidor</code> y en <code>/etc/ssh/sshd_config</code> pon <code>PasswordAuthentication no</code> y <code>PermitRootLogin no</code>. Una llave es imposible de adivinar; una contraseña, no.</p>
+<p>En un hosting compartido con cPanel, el firewall y SSH los administra la empresa de hosting: en ese caso basta con verificación en dos pasos en el panel.</p>
+</div>
+</section>
+
+<!-- ===================================================================== -->
+<section class="parte">
+<h2>5. Las pruebas que vigilan todo esto</h2>
+<svg viewBox="0 0 720 130" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="18" font-size="12" font-weight="700" fill="#3b2a5c">50 pruebas automáticas (antes 31)</text>
+  <rect x="10" y="30" width="700" height="34" rx="6" fill="#f3eefb"/>
+  <rect x="10" y="30" width="435" height="34" rx="6" fill="#866BAF"/><text x="227" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">31 que ya existían</text>
+  <rect x="445" y="30" width="265" height="34" fill="#2fa65a"/><text x="577" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">19 nuevas</text>
+  <text x="10" y="90" font-size="11" fill="#444">Nuevas: red y puertos (2) · HTTPS (5) · límite de peticiones (4) · CORS y errores (3) · accesibilidad y robustez (5)</text>
+  <text x="10" y="112" font-size="11" fill="#444">Resultado: 50 de 50 en verde · npm audit: 0 vulnerabilidades · HTML válido · 183 referencias a archivos verificadas</text>
+</svg>
+<p>Cada vez que se sube un cambio a GitHub, la integración continua ejecuta las 50 pruebas en dos versiones de Node. Si alguien, por error, vuelve a abrir el puerto, quita el límite, baja el contraste o reintroduce <code>innerHTML</code>, GitHub lo marca en rojo antes de publicarse.</p>
+</section>
+
+<section>
+<h2>6. Si en el futuro el sitio crece</h2>
+<p>Varios puntos de tus imágenes «no aplican» porque hoy el sitio no tiene base de datos, usuarios ni formularios. Si algún día agregas un panel, reservas en línea o una tienda, esta es la lista de lo que habría que hacer desde el primer día:</p>
+<table>
+  <tr><th>Si agregas…</th><th>Hay que…</th></tr>
+  <tr><td>Base de datos</td><td>Consultas parametrizadas o un ORM (Prisma); usuario de base de datos sin permisos de borrar tablas; índices en columnas de búsqueda; paginación; respaldos diarios en otro servidor y pruebas de restauración.</td></tr>
+  <tr><td>Formularios</td><td>Validar <b>en el servidor</b> con una librería de esquemas (por ejemplo Zod), límite de envíos por IP, campo trampa contra robots y escapar todo lo que se muestre.</td></tr>
+  <tr><td>Inicio de sesión / panel</td><td>Contraseñas con bcrypt o Argon2; sesión en cookie <code>HttpOnly</code>, <code>Secure</code> y <code>SameSite=Lax</code> (nunca tokens en <code>localStorage</code>); expiración; protección CSRF; 2FA; comprobar permisos en <b>cada</b> ruta (evitar IDOR); límite de 5 intentos por minuto.</td></tr>
+  <tr><td>Subida de fotos</td><td>Validar el tipo real del archivo (no solo la extensión), renombrarlo, limitar el tamaño y guardarlo fuera de <code>public/</code> o en un servicio como Cloudinary.</td></tr>
+  <tr><td>API para otra aplicación</td><td>CORS solo para tu dominio exacto, nunca <code>*</code>.</td></tr>
+</table>
+</section>
+
+<section>
+<h2>7. Tareas que quedan de tu lado al publicar</h2>
+<table>
+  <tr><th>Tarea</th><th>Dónde</th><th>Por qué</th></tr>
+  <tr><td>Certificado HTTPS (Let's Encrypt)</td><td>Panel del hosting o Certbot/Caddy</td><td>Sin certificado, la redirección a HTTPS no tiene adónde ir.</td></tr>
+  <tr><td><code>TRUST_PROXY=true</code> y <code>NODE_ENV=production</code></td><td>Variables de la app</td><td>Activan HTTPS obligatorio, HSTS y el límite por IP real.</td></tr>
+  <tr><td>Firewall y SSH con llaves (solo VPS)</td><td><code>deploy/firewall-ufw.sh</code></td><td>Cierra todo excepto lo necesario.</td></tr>
+  <tr><td>Cloudflare (gratis)</td><td>DNS del dominio</td><td>Frena ataques grandes antes de que lleguen al servidor y acelera el sitio.</td></tr>
+  <tr><td>Respaldos y monitoreo</td><td>Hosting y UptimeRobot</td><td>Recuperarte de un fallo y enterarte antes que tus clientes.</td></tr>
+  <tr><td>Verificación en dos pasos</td><td>GitHub, hosting, dominio y correo</td><td>La mayoría de los hackeos usan contraseñas robadas.</td></tr>
+</table>
+<div class="caja idea"><b class="t">💡 Sobre los cambios en GitHub</b>Todos los cambios de esta auditoría quedan registrados a tu nombre, sin coautores ni menciones a herramientas en los commits ni en el Pull Request.</div>
+</section>
+</body>
+</html>

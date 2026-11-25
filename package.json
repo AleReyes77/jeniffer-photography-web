@@ -1,6 +1,6 @@
 {
   "name": "jeniffer-photography-web",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "description": "Sitio web y servidor de Jeniffer Photography: portafolio de bodas, quinceaños y cumpleaños en Nicaragua, con reservas por WhatsApp.",
   "type": "module",
@@ -19,7 +19,8 @@
     "verificar": "npm run lint:html && npm run check:recursos && npm test",
     "docs:pdf": "node scripts/documentacion/generar-pdf.js",
     "recursos": "node scripts/preparar-recursos.js",
-    "docs:guia": "node scripts/documentacion/generar-guia.js"
+    "docs:guia": "node scripts/documentacion/generar-guia.js",
+    "docs:auditoria": "node scripts/documentacion/generar-guia.js auditoria"
   },
   "keywords": [
     "fotografia",

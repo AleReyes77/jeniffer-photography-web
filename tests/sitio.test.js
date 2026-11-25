@@ -202,3 +202,43 @@ describe('SEO del HTML', () => {
     assert.deepEqual(sinAlt, []);
   });
 });
+
+describe('Accesibilidad y robustez', () => {
+  it('la portada está dentro de una región <header> y el fondo 3D decorativo se oculta a lectores de pantalla', async () => {
+    const { text } = await paginaPrincipal();
+    assert.match(text, /<header class="hero-perspective">[\s\S]*<h1>/);
+    assert.match(text, /<div data-app-container aria-hidden="true"><\/div>/);
+  });
+
+  it('el botón de precios no usa un nombre accesible distinto de su texto visible', () => {
+    const sitio = readFileSync(path.join(PUBLICA, 'js/sitio.js'), 'utf8');
+    assert.doesNotMatch(sitio, /setAttribute\('aria-label'/);
+  });
+
+  it('no inserta textos en el HTML con innerHTML y plantillas (prevención de XSS)', () => {
+    const main = readFileSync(path.join(PUBLICA, 'js/main.js'), 'utf8');
+    assert.doesNotMatch(main, /\.innerHTML\s*=\s*`[^`]*\$\{\s*s\./);
+  });
+
+  it('cada galería 3D comprueba WebGL antes de crear su motor (sin WebGL, el resto del sitio sigue funcionando)', () => {
+    const main = readFileSync(path.join(PUBLICA, 'js/main.js'), 'utf8');
+    const creaciones = (main.match(/new THREE\.WebGLRenderer/g) || []).length;
+    const comprobaciones = (main.match(/JF_webglDisponible/g) || []).length;
+    assert.equal(creaciones, 3);
+    assert.ok(comprobaciones >= 4, 'una definición + una comprobación por galería');
+  });
+
+  it('los textos pequeños violetas cumplen el contraste mínimo WCAG AA (4,5:1)', () => {
+    const css = readFileSync(path.join(PUBLICA, 'css/styles.css'), 'utf8');
+    const lum = (h) => {
+      const [r, g, b] = h.match(/\w\w/g).map((x) => parseInt(x, 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const contraste = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+    const colorDe = (regla) => css.match(regla)[1];
+    assert.ok(contraste(colorDe(/\.sec__label \{[^}]*?color:\s*#([0-9a-f]{6})/i), '1f2029') >= 4.5, 'etiquetas de sección');
+    assert.ok(contraste(colorDe(/\.site-footer \.footer-links a \{[^}]*?color:\s*#([0-9a-f]{6})/i), '0d0d14') >= 4.5, 'enlaces del pie');
+    assert.ok(contraste('ffffff', css.match(/\.selfie-btn\{[^}]*background:#([0-9a-f]{6})/i)[1]) >= 4.5, 'botón de la selfie');
+    assert.ok(contraste('ffffff', css.match(/\.pricing-card__btn\{[^}]*background:#([0-9a-f]{6})/i)[1]) >= 4.5, 'botón de precios');
+  });
+});

@@ -11,6 +11,21 @@ Cómo el proyecto evita los errores más comunes de seguridad, deuda técnica y 
 | Control de acceso solo en el frontend | No hay paneles privados ni datos por usuario. `dotfiles: 'ignore'` impide descargar `.env` o `.htaccess` (probado). |
 | Contraseñas débiles / sin 2FA | Activa la verificación en dos pasos en GitHub, en el panel del hosting, en el registrador del dominio y en tu correo. |
 
+## Red, servidor y arquitectura
+
+| Riesgo | Cómo se evita aquí |
+|--------|--------------------|
+| Conflictos de puertos entre sitios | `HOST=127.0.0.1` y un `PORT` por sitio detrás de Nginx o Caddy (`deploy/`). Si el puerto está ocupado, el log lo explica. |
+| Contaminación de entornos | Node fijado en `.nvmrc`, `engine-strict` en `.npmrc`, dependencias exactas en `package-lock.json`, Docker opcional. |
+| CORS abierto | No se envía `Access-Control-Allow-Origin` (probado). |
+| Cookies y localStorage | El sitio no usa ninguno. |
+| Sin límite de peticiones | Límite por IP de 300/min (429). Recomendado: Cloudflare delante como WAF/CDN. |
+| Subida de archivos | No existe: la selfie nunca sale del navegador. |
+| Errores detallados | Mensajes genéricos al visitante; pila solo en el log. |
+| Sin HTTPS | Redirección 301 y HSTS en producción. |
+| Mínimo privilegio | Docker corre como el usuario `node`; el servidor avisa si se ejecuta como root. No hay base de datos. |
+| Galerías que fallan | Comprobación de WebGL con aviso; indicadores de carga y error. |
+
 ## Deuda técnica
 
 | Riesgo | Cómo se evita aquí |

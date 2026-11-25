@@ -10,8 +10,14 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const ENTRADA = path.join(RAIZ, 'scripts', 'documentacion', 'guia.html');
-const SALIDA = path.join(RAIZ, 'docs', 'guia-buenas-practicas.pdf');
+/** Documentos disponibles: npm run docs:guia (por defecto) y npm run docs:auditoria. */
+const DOCUMENTOS = {
+  guia: ['guia.html', 'guia-buenas-practicas.pdf'],
+  auditoria: ['auditoria.html', 'auditoria-seguridad.pdf'],
+};
+const [fuente, destino] = DOCUMENTOS[process.argv[2] || 'guia'] || DOCUMENTOS.guia;
+const ENTRADA = path.join(RAIZ, 'scripts', 'documentacion', fuente);
+const SALIDA = path.join(RAIZ, 'docs', destino);
 
 const NAVEGADORES = [
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
@@ -28,4 +34,4 @@ if (!navegador) {
 }
 
 execFileSync(navegador, ['--headless', '--disable-gpu', '--no-pdf-header-footer', `--print-to-pdf=${SALIDA}`, pathToFileURL(ENTRADA).href], { stdio: 'ignore', timeout: 120_000 });
-console.log(`✔ Guía generada: ${path.relative(RAIZ, SALIDA)}`);
+console.log(`✔ PDF generado: ${path.relative(RAIZ, SALIDA)}`);

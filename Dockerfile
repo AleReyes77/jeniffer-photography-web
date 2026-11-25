@@ -2,6 +2,8 @@
 FROM node:22-alpine
 
 ENV NODE_ENV=production
+# Dentro del contenedor hay que escuchar en todas las interfaces; Docker decide qué se publica.
+ENV HOST=0.0.0.0
 WORKDIR /app
 
 # Instala solo las dependencias de producción (capa en caché si package*.json no cambia)

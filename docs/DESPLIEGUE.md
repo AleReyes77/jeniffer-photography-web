@@ -31,7 +31,14 @@ pm2 start ecosystem.config.cjs   # mantiene el sitio encendido y lo reinicia si 
 pm2 save && pm2 startup          # lo enciende solo al reiniciar el VPS
 ```
 
-Delante pon **Nginx** o **Caddy** con HTTPS que reenvíe al puerto 3000 (Caddy obtiene el certificado solo).
+Delante pon **Nginx** o **Caddy** con HTTPS que reenvíe al puerto 3000: hay configuraciones listas en `deploy/nginx.conf` y `deploy/Caddyfile`.
+El sitio escucha solo en `127.0.0.1` (variable `HOST`), así el puerto 3000 nunca queda abierto a internet.
+Activa el firewall con `deploy/firewall-ufw.sh` (solo SSH, 80 y 443) y entra por SSH con llaves, no con contraseña.
+
+### Varios sitios en el mismo VPS
+
+Cada sitio usa su propio `PORT` (3000, 3001, 3002…) y su propio bloque en Nginx o Caddy, que reparte el tráfico por dominio.
+Cada proyecto instala sus dependencias en su propia carpeta (`npm ci`), con la versión de Node fijada en `.nvmrc`: así uno no rompe al otro.
 
 ## Opción C — Docker
 

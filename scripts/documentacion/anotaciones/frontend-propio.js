@@ -38,7 +38,6 @@ export default {
       ["boton.setAttribute('target', '_blank')", 'Se abre en una pestaña nueva (o en la app de WhatsApp en el celular).'],
       ["boton.setAttribute('rel', 'noopener noreferrer')", 'Seguridad y privacidad: la página abierta no puede controlar esta pestaña (noopener) ni sabe desde dónde llegó el visitante (noreferrer).'],
       ["boton.classList.add('pricing-card__btn--pendiente')", 'Estilo de botón secundario (contorno), definido en styles.css.'],
-      ["boton.setAttribute('aria-label'", 'Nombre accesible que explica la situación a los lectores de pantalla.'],
       ["boton.lastChild.textContent = ' Pídelos por WhatsApp'", 'Cambia el texto visible. <code>lastChild</code> es el nodo de texto que sigue al ícono SVG, así el ícono se conserva.'],
       ['function iniciar() {', 'Ejecuta las tres mejoras.'],
       ['prepararAvisoEspiral();', 'Aviso de la espiral.'], ['revisarArchivosDePrecios();', 'Botones de precios.'],

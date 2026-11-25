@@ -342,7 +342,7 @@ body.travel-on .travel-section, body.wildlife-on .wildlife-section, body.nature-
 .scroll-cue { font-family: 'Inter Tight', 'Poppins', sans-serif; font-size: clamp(1.4rem, 3vw, 1.875rem); font-weight: 500; color: #b9b6c9; animation: breathe 2.5s ease-in-out infinite; }
 @keyframes breathe { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-.sec__label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.2em; color: #866BAF; font-weight: 600; margin: 0 0 1.75rem; }
+.sec__label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.2em; color: #9b84c4; font-weight: 600; margin: 0 0 1.75rem; }
 
 .sec h1, .sec h2 { line-height: 0.95; font-weight: 800; font-family: 'Inter Tight', 'Poppins', sans-serif; margin: 0; }
 .sec h1 { font-size: clamp(3rem, 9vw, 7.5rem); }
@@ -657,7 +657,7 @@ body.travel-on .travel-section, body.wildlife-on .wildlife-section, body.nature-
 }
 
 .site-footer .footer-links a {
-  color: #866BAF;
+  color: #9179bb;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -686,7 +686,7 @@ body.travel-on .travel-section, body.wildlife-on .wildlife-section, body.nature-
   padding-top: 2rem;
   border-top: 1px solid rgba(255,255,255,0.06);
   font-size: 13px;
-  color: #706e69;
+  color: #8a8883;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -1475,12 +1475,12 @@ button,a,[role="button"]{-webkit-tap-highlight-color:transparent;}
 }
 .pricing-card__btn{
   display:inline-flex; align-items:center; gap:10px; min-height:48px;
-  padding:12px 26px; border-radius:999px; background:#866BAF; color:#fff !important;
+  padding:12px 26px; border-radius:999px; background:#7b60a6; color:#fff !important;
   font-weight:600; font-size:1rem; letter-spacing:.03em; text-decoration:none;
   box-shadow:0 10px 30px rgba(134,107,175,.35);
   transition:transform .2s ease, background-color .2s ease, box-shadow .2s ease;
 }
-.pricing-card__btn:hover{ background:#9a7fc6; transform:translateY(-2px); box-shadow:0 14px 34px rgba(134,107,175,.5); }
+.pricing-card__btn:hover{ background:#6c5294; transform:translateY(-2px); box-shadow:0 14px 34px rgba(134,107,175,.5); }
 @media (max-width:640px){
   .pricing-downloads__grid{ grid-template-columns:1fr; }
 }
@@ -1547,11 +1547,11 @@ button,a,[role="button"]{-webkit-tap-highlight-color:transparent;}
 }
 .selfie-btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px;
-  padding:10px 22px; border-radius:999px; border:1px solid #866BAF; background:#866BAF; color:#fff !important;
+  padding:10px 22px; border-radius:999px; border:1px solid #7b60a6; background:#7b60a6; color:#fff !important;
   font:600 .95rem 'Poppins',sans-serif; letter-spacing:.02em; cursor:pointer; text-decoration:none;
   box-shadow:0 10px 26px rgba(134,107,175,.35); transition:transform .2s, background-color .2s;
 }
-.selfie-btn:hover{ background:#9a7fc6; transform:translateY(-2px); }
+.selfie-btn:hover{ background:#6c5294; transform:translateY(-2px); }
 .selfie-btn--ghost{ background:transparent; box-shadow:none; }
 .selfie-btn--ghost:hover{ background:rgba(134,107,175,.25); }
 .selfie-btn[disabled]{ opacity:.5; cursor:not-allowed; transform:none; }
@@ -3093,3 +3093,11 @@ button.spiral-infos{border:0;font-family:inherit;line-height:1.3}
 
 /* Botón de precios cuando el archivo aún no está publicado */
 .pricing-card__btn--pendiente{background:transparent;border:1px solid #866BAF;box-shadow:none}
+
+/* ============================================================
+   ESTADOS DE CARGA Y DE ERROR DE LAS GALERÍAS
+   ============================================================ */
+.aviso-galeria{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;margin:0;max-width:min(90%,520px);padding:12px 18px;border-radius:10px;background:rgba(15,16,22,.85);color:#fff;font:500 1rem/1.5 'Poppins',sans-serif;text-align:center}
+.slider[data-cargando] .slider__images::after{content:"";position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;animation:girar-carga .8s linear infinite;z-index:40}
+@keyframes girar-carga{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.slider[data-cargando] .slider__images::after{animation:none}}
