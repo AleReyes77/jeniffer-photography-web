@@ -58,7 +58,6 @@
     boton.setAttribute('target', '_blank');
     boton.setAttribute('rel', 'noopener noreferrer');
     boton.classList.add('pricing-card__btn--pendiente');
-    boton.setAttribute('aria-label', 'Pide la lista de precios por WhatsApp');
     boton.lastChild.textContent = ' Pídelos por WhatsApp';
   }
 

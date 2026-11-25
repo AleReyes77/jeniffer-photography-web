@@ -28,13 +28,24 @@ function enteroPositivo(valor, porDefecto) {
  */
 export function cargarConfiguracion(env = process.env) {
   const entorno = env.NODE_ENV || 'development';
+  const esProduccion = entorno === 'production';
+  const confiarEnProxy = env.TRUST_PROXY === 'true';
 
   return Object.freeze({
     entorno,
-    esProduccion: entorno === 'production',
+    esProduccion,
     puerto: enteroPositivo(env.PORT, 3000),
+    // 127.0.0.1 = solo accesible desde el mismo servidor (detrás de Nginx/Caddy/Apache).
+    // Así el puerto 3000 nunca queda expuesto directamente a internet. Docker usa 0.0.0.0.
+    host: env.HOST || '127.0.0.1',
     sitioUrl: (env.SITE_URL || 'http://localhost:3000').replace(/\/+$/, ''),
-    confiarEnProxy: env.TRUST_PROXY === 'true',
+    confiarEnProxy,
+    // Redirigir HTTP → HTTPS solo tiene sentido detrás de un proxy que atiende HTTPS.
+    forzarHttps: env.FORCE_HTTPS ? env.FORCE_HTTPS === 'true' : esProduccion && confiarEnProxy,
+    limite: Object.freeze({
+      ventanaSegundos: enteroPositivo(env.RATE_LIMIT_WINDOW_SEC, 60),
+      maximoPeticiones: enteroPositivo(env.RATE_LIMIT_MAX, 300),
+    }),
     carpetaPublica: path.join(RAIZ_PROYECTO, 'public'),
   });
 }

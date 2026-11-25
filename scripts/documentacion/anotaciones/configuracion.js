@@ -49,6 +49,7 @@ export default {
       TRUST_PROXY: '<code>true</code> detrás de un proxy para obtener la IP real del visitante.',
       RATE_LIMIT_WINDOW_MIN: 'Ventana del límite de reservas, en minutos.',
       RATE_LIMIT_MAX: 'Máximo de reservas por IP en esa ventana.',
+      HOST: 'Dirección de escucha: 127.0.0.1 = solo a través del proxy (recomendado).', FORCE_HTTPS: 'Redirigir HTTP a HTTPS.', RATE_LIMIT_WINDOW_SEC: 'Ventana del límite de peticiones, en segundos.',
       RESERVAS_FILE: 'Archivo JSON Lines de reservas.',
       SMTP_HOST: 'Servidor de correo saliente.',
       SMTP_PORT: 'Puerto SMTP (465 SSL, 587 STARTTLS).',
@@ -154,5 +155,22 @@ export default {
       ExpiresActive: 'Activa los tiempos de caché.', ExpiresByType: 'Tiempo de caché por tipo de archivo.',
       Header: 'Agrega una cabecera de seguridad a todas las respuestas.', Options: '<code>-Indexes</code>: impide listar el contenido de las carpetas.',
     },
+  },
+  '.nvmrc': { resumen: 'Versión de Node del proyecto (22). nvm, fnm y algunos paneles de hosting la leen para usar esa versión solo en esta carpeta, sin afectar a otros sitios.', claves: {} },
+  '.npmrc': {
+    resumen: 'Configuración de npm para este proyecto.',
+    claves: { 'engine-strict': 'npm se niega a instalar si la versión de Node no cumple «engines» de package.json.', 'save-exact': 'Las dependencias nuevas se guardan con versión exacta (sin ^).' },
+  },
+  'deploy/Caddyfile': {
+    resumen: 'Caddy como proxy inverso con HTTPS automático. Cada bloque es un dominio; reverse_proxy lo envía al puerto local de su sitio. Así varios sitios conviven en un VPS sin chocar.',
+    claves: { 'tudominio.com': 'Bloque del dominio principal.', encode: 'Comprime las respuestas.', reverse_proxy: 'Reenvía al servidor Node en el puerto local.', 'www.tudominio.com': 'Bloque de www.', redir: 'Redirige permanentemente www a sin www.', '}': 'Fin del bloque.' },
+  },
+  'deploy/nginx.conf': {
+    resumen: 'Nginx como proxy inverso: atiende los puertos públicos 80 y 443, fuerza HTTPS, unifica www y reparte por dominio a cada sitio en su puerto local.',
+    claves: { server: 'Un bloque por sitio o redirección.', listen: 'Puerto público en el que escucha (80 HTTP, 443 HTTPS, IPv4 e IPv6).', server_name: 'Dominios que atiende este bloque.', return: 'Redirección 301.', http2: 'Activa HTTP/2 (más rápido).', ssl_certificate: 'Certificado HTTPS (Let\'s Encrypt).', ssl_certificate_key: 'Llave privada del certificado.', ssl_protocols: 'Solo versiones seguras de TLS.', server_tokens: 'No revela la versión de Nginx.', client_max_body_size: 'Tamaño máximo de una petición.', location: 'Reglas para las rutas.', proxy_pass: 'Envía al servidor Node local.', proxy_http_version: 'Versión de HTTP hacia Node.', proxy_set_header: 'Pasa a Node el dominio, la IP real y si fue HTTPS (lo usan TRUST_PROXY y la redirección).', proxy_read_timeout: 'Tiempo máximo de espera de Node.', '}': 'Fin del bloque.' },
+  },
+  'deploy/firewall-ufw.sh': {
+    resumen: 'Firewall UFW para un VPS: bloquea todo lo que entra excepto SSH, HTTP y HTTPS. El puerto 3000 de Node queda cerrado al exterior.',
+    claves: { set: '<code>set -e</code>: detiene el script ante el primer error.', PUERTO_SSH: 'Puerto de SSH: revísalo antes de ejecutar.', ufw: 'Cada línea configura una regla del firewall (ver el comentario de la derecha).' },
   },
 };

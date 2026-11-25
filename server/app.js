@@ -10,6 +10,7 @@ import express from 'express';
 import compression from 'compression';
 import { RAIZ_PROYECTO } from './config.js';
 import { seguridad, permisos } from './middleware/seguridad.js';
+import { crearLimitador } from './middleware/limite.js';
 import { crearRutasApi } from './routes/api.js';
 
 const { version } = JSON.parse(readFileSync(path.join(RAIZ_PROYECTO, 'package.json'), 'utf8'));
@@ -34,6 +35,23 @@ export function cacheParaArchivo(rutaArchivo) {
 }
 
 /**
+ * Middleware que registra en el log cada respuesta con error de servidor (5xx),
+ * con método, ruta y duración, para enterarse de un fallo antes que los clientes.
+ * @param {{ error: Function }} registro
+ */
+export function registrarErrores(registro) {
+  return (peticion, respuesta, siguiente) => {
+    const inicio = process.hrtime.bigint();
+    respuesta.on('finish', () => {
+      if (respuesta.statusCode < 500) return;
+      const milisegundos = Number(process.hrtime.bigint() - inicio) / 1e6;
+      registro.error('respuesta-con-error', { metodo: peticion.method, ruta: peticion.path, estado: respuesta.statusCode, ms: Math.round(milisegundos) });
+    });
+    siguiente();
+  };
+}
+
+/**
  * @param {{ config: object, registro: object }} dependencias
  */
 export function crearApp({ config, registro }) {
@@ -43,8 +61,23 @@ export function crearApp({ config, registro }) {
   // Detrás de un proxy (Nginx, Cloudflare, el panel del hosting) para obtener la IP real del visitante.
   if (config.confiarEnProxy) app.set('trust proxy', 1);
 
+  app.use(registrarErrores(registro));
+
   app.use(seguridad(config));
   app.use(permisos);
+
+  // Límite de peticiones por IP (lo antes posible, para frenar el abuso sin gastar recursos).
+  app.use(crearLimitador({ ...config.limite, confiarEnProxy: config.confiarEnProxy, registro }).limitar);
+
+  // HTTP → HTTPS (301). /api/salud se excluye para que los chequeos internos del hosting
+  // o de Docker, que usan http://localhost, sigan funcionando.
+  if (config.forzarHttps) {
+    app.use((peticion, respuesta, siguiente) => {
+      if (peticion.secure || peticion.path === '/api/salud') return siguiente();
+      const base = config.sitioUrl.startsWith('https://') ? config.sitioUrl : `https://${peticion.hostname}`;
+      return respuesta.redirect(301, base + peticion.originalUrl);
+    });
+  }
   // Comprime con gzip todo lo que pese más de 1 KB (HTML, CSS, JS y JSON pesan de 3 a 5 veces menos).
   app.use(compression({ threshold: 1024 }));
 

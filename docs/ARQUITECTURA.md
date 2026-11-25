@@ -4,8 +4,11 @@
 
 ```
 Navegador ──HTTPS──► Express (server/app.js)
+                       ├─ registro de respuestas 5xx
                        ├─ Helmet: CSP solo 'self', HSTS, nosniff, Referrer-Policy
                        ├─ Permissions-Policy (solo cámara)
+                       ├─ límite de peticiones por IP (429)
+                       ├─ HTTP → HTTPS (301) en producción detrás del proxy
                        ├─ compression (gzip, > 1 KB)
                        ├─ /index.html → / (301)
                        ├─ /api/salud

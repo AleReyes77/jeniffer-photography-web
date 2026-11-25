@@ -371,7 +371,7 @@ SELECT * FROM clientes WHERE nombre = '<span class="r">' OR '1'='1</span>'
 <p>Un <b>entorno de pruebas</b> (<i>staging</i>) es una copia privada del sitio donde se prueba antes de publicar. En un proyecto como el tuyo, tu computadora con <code>npm run dev</code> cumple ese papel. Si algún día lo necesitas, el mismo hosting puede tener un subdominio de pruebas (<code>pruebas.tudominio.com</code>).</p>
 
 <h3>5.2 Pruebas automáticas y monitoreo</h3>
-<p>Una <b>prueba automática</b> es un pequeño programa que revisa que algo funcione, por ejemplo «el botón de WhatsApp apunta al número correcto». Tu proyecto tiene <b>31 pruebas</b> que se ejecutan con <code>npm test</code>. En GitHub, la <b>integración continua (CI)</b> las ejecuta sola en cada cambio, en dos versiones de Node.js.</p>
+<p>Una <b>prueba automática</b> es un pequeño programa que revisa que algo funcione, por ejemplo «el botón de WhatsApp apunta al número correcto». Tu proyecto tiene <b>50 pruebas</b> que se ejecutan con <code>npm test</code>. En GitHub, la <b>integración continua (CI)</b> las ejecuta sola en cada cambio, en dos versiones de Node.js.</p>
 <div class="caja idea"><b class="t">💡 Un caso real de esta versión</b>Al optimizar, se escribió por error una línea con una barra mal puesta en <code>fotos.js</code>, y las galerías dejaron de funcionar. La prueba en el navegador lo detectó antes de publicar. Para que no vuelva a pasar, se agregó una prueba que revisa la sintaxis de todos los scripts: se comprobó que falla con un archivo roto y pasa con el correcto.</div>
 <h4>Monitoreo: enterarte antes que tus clientas</h4>
 <p>Tu servidor tiene la dirección <code>/api/salud</code>, que responde «ok» si todo funciona. Un servicio de monitoreo gratuito la consulta cada 5 minutos y te avisa si deja de responder:</p>
@@ -452,7 +452,7 @@ SELECT * FROM clientes WHERE nombre = '<span class="r">' OR '1'='1</span>'
   <tr><td><b>Push protection</b></td><td>Bloquea una subida si contiene una contraseña, antes de que se publique.</td></tr>
   <tr><td><b>Dependabot alerts y updates</b></td><td>Avisa de librerías vulnerables y abre PRs para actualizarlas.</td></tr>
   <tr><td><b>CodeQL</b></td><td>Analiza el código buscando vulnerabilidades.</td></tr>
-  <tr><td><b>CI (pruebas)</b></td><td>Ejecuta las 31 pruebas en cada cambio.</td></tr>
+  <tr><td><b>CI (pruebas)</b></td><td>Ejecuta las 50 pruebas en cada cambio.</td></tr>
 </table>
 </section>
 

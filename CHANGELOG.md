@@ -2,6 +2,29 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y [SemVer](https://semver.org/lang/es/).
 
+## [2.2.0] — 2026-11-24
+
+### Seguridad
+- Límite de peticiones por IP propio (300 por minuto, configurable), con 429 y Retry-After; protegido contra bloqueos masivos si falta TRUST_PROXY.
+- Redirección permanente HTTP → HTTPS en producción detrás de un proxy (excepto /api/salud).
+- El servidor escucha por defecto solo en 127.0.0.1: el puerto nunca queda expuesto directamente a internet.
+- Registro en el log de toda respuesta 5xx; aviso si el puerto está ocupado o si se ejecuta como root.
+- Textos de los sliders construidos con textContent en lugar de innerHTML.
+
+### Robustez
+- Sin WebGL, las galerías 3D muestran un aviso en lugar de detener el resto del JavaScript (antes se perdían la navegación por teclado y las fotos de «Momentos que se abren»).
+- Indicador de carga y mensajes de error al abrir una galería y en la espiral.
+
+### Accesibilidad (axe-core: 0 problemas)
+- Contraste WCAG AA (≥ 4,5:1) en etiquetas, enlaces del pie, texto de derechos y botones.
+- Nombres accesibles que coinciden con el texto visible (menú de la portada y botones de precios).
+- Portada dentro de una región header; fondo 3D decorativo oculto a lectores de pantalla.
+
+### Entornos y despliegue
+- .nvmrc/.node-version (Node 22) y .npmrc con engine-strict y save-exact.
+- deploy/: Nginx y Caddy como proxy inverso para varios sitios en un VPS, y firewall UFW.
+- 19 pruebas nuevas (50 en total).
+
 ## [2.1.0] — 2026-11-23
 
 ### Cambiado

@@ -1,0 +1,20 @@
+# ============================================================
+#  Caddy como proxy inverso: más simple que Nginx y obtiene y renueva
+#  el certificado HTTPS automáticamente. Cada sitio, su propio puerto local.
+#  Ubicación habitual: /etc/caddy/Caddyfile  →  `sudo systemctl reload caddy`
+# ============================================================
+
+tudominio.com {
+    encode gzip
+    reverse_proxy 127.0.0.1:3000
+}
+
+# www → sin www
+www.tudominio.com {
+    redir https://tudominio.com{uri} permanent
+}
+
+# Ejemplo de un segundo sitio en el mismo servidor, sin chocar:
+# otrositio.com {
+#     reverse_proxy 127.0.0.1:3001
+# }
